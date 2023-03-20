@@ -1,0 +1,8 @@
+# Excluded project paths
+
+# main
+main.cpp
+
+# CMakefiles
+/build/
+CMakeLists.txt

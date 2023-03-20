@@ -19,6 +19,7 @@ constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
                   "integer::mulmod argument must be integers.");
 
     std::common_type_t<M, N> ret = (__int128_t)x * y % m;
+    return ret;
 }
 
 // Calculate x^y mod m.

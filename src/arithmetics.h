@@ -9,6 +9,17 @@
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace integer {
 
+// Struct for gcd(a, b) and the coefficient of bezut's identity ax + by = gcd(a, b).
+template <class M, class N>
+struct solution {
+    solution() : g(0), x(0), y(0) {}
+    solution(std::common_type_t<M, N> _g, M _x, N _y) : g(_g), x(_x), y(_y) {}
+
+    std::common_type_t<M, N> g;  // gcd of a, b
+    M x;                         // coefficient of a
+    N y;                         // coefficient of b
+};
+
 // Calculate x * y mod m.
 template <class M, class N>
 constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
@@ -24,8 +35,7 @@ constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
 
 // Calculate x^y mod m.
 template <class M, class N>
-constexpr std::common_type_t<M, N> powmod(M x, M y,
-                                          const long long &m) {
+constexpr std::common_type_t<M, N> powmod(M x, M y, const long long &m) {
     static_assert(std::is_integral_v<M>,
                   "integer::mulmod argument must be integers.");
     static_assert(std::is_integral_v<N>,

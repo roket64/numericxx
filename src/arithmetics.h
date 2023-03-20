@@ -9,7 +9,7 @@
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace integer {
 
-// Struct for gcd(a, b) and the coefficient of bezut's identity ax + by = gcd(a, b).
+// Struct for gcd(a, b) and the coefficient of bezout's identity ax + by = gcd(a, b).
 template <class M, class N>
 struct solution {
     solution() : g(0), x(0), y(0) {}

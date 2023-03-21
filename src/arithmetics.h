@@ -1,15 +1,18 @@
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
+#include <tuple>
 #include <type_traits>
 
 // Components for performing integer arithmetics.
 // Includes basic algorithms of number theory.
 
 // Basic integer arithmetics, no support for real numbers or complexes.
+// TODO : should make a exception such as DividedByZero.
 namespace integer {
 
-// Struct for gcd(a, b) and the coefficient of bezout's identity ax + by = gcd(a, b).
+// Struct for gcd(a, b) and the coefficient of bezout's identity ax + by =
+// gcd(a, b).
 template <class M, class N>
 struct solution {
     solution() : g(0), x(0), y(0) {}
@@ -50,6 +53,23 @@ constexpr std::common_type_t<M, N> powmod(M x, M y, const long long &m) {
     }
 
     return ret;
+}
+
+// Calculate gcd of given a, b and the solution of bezout's identity
+template <class M, class N>
+constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
+    M x = 1, x1 = 0;
+    N y = 0, y1 = 1;
+
+    std::common_type_t<M, N> a1 = a, b1 = b;
+    while (b1) {
+        std::common_type_t<M, N> q = a1 / b1;
+        std::tie(x, x1) = std::make_tuple(x1, x - q * x1);
+        std::tie(y, y1) = std::make_tuple(y1, y - q * y1);
+        std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
+    }
+
+    return integer::solution(a1, x, y);
 }
 }  // namespace integer
 

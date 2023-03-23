@@ -1,6 +1,7 @@
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
+#include <exception>
 #include <tuple>
 #include <type_traits>
 
@@ -10,6 +11,26 @@
 // Basic integer arithmetics, no support for real numbers or complexes.
 // TODO : should make a exception such as DividedByZero.
 namespace integer {
+
+namespace excpetions {
+class DivdiedByZeroException : public std::exception {
+   public:
+    DivdiedByZeroException(const char *msg) : message(msg){};
+    const char *what() const noexcept override { return message; }
+
+   private:
+    const char *message;
+};
+
+class ValueOverflowException : public std::exception {
+   public:
+    ValueOverflowException(const char *msg) : message(msg){};
+    const char *what() const noexcept override { return message; }
+
+   private:
+    const char *message;
+};
+}  // namespace excpetions
 
 // Struct for gcd(a, b) and the coefficient of bezout's identity.
 template <class M, class N>
@@ -22,8 +43,8 @@ struct solution {
     N y;                         // coefficient of b
 };
 
-// Calculate x * y mod m.
 template <class M, class N>
+// Calculate x * y mod m.
 constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
                                           const long long &m) {
     static_assert(std::is_integral_v<M>,
@@ -35,8 +56,8 @@ constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
     return ret;
 }
 
-// Calculate x^y mod m.
 template <class M, class N>
+// Calculate x^y mod m.
 constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     static_assert(std::is_integral_v<M>,
                   "integer::powmod argument must be integers.");

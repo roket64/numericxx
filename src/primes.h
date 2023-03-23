@@ -5,6 +5,8 @@
 
 #include "arithmetics.h"
 
+namespace integer {
+
 namespace details {
 template <class T>
 bool __trial_div(const T &n) {
@@ -30,7 +32,7 @@ bool __check(const long long &n, const long long &a, const long long &d,
 }  // namespace details
 
 template <class T>
-bool is_prime(const T &n) {}
+bool is_prime(const T &n);
 
 template <>
 bool is_prime(const int &n) {
@@ -64,12 +66,14 @@ bool is_prime(const long long &n) {
         d >>= 1LL;
     }
 
-    for (auto &a : {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37}) {
+    for (auto &a :
+         {2LL, 3LL, 5LL, 7LL, 11LL, 13LL, 17LL, 19LL, 23LL, 29LL, 31LL, 37LL}) {
         if (n == a) return true;
         if (!details::__check(n, a, d, s)) return false;
     }
 
     return true;
 }
+}  // namespace integer
 
 #endif  // primes.h

@@ -10,7 +10,6 @@
 // Includes basic algorithms of number theory.
 
 // Basic integer arithmetics, no support for real numbers or complexes.
-// TODO : should make a exception such as DividedByZero.
 namespace integer {
 
 namespace excpetions {

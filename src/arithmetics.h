@@ -11,7 +11,7 @@
 // TODO : should make a exception such as DividedByZero.
 namespace integer {
 
-// Struct for gcd(a, b) and the coefficient of bezout's identity
+// Struct for gcd(a, b) and the coefficient of bezout's identity.
 template <class M, class N>
 struct solution {
     solution() : g(0), x(0), y(0) {}
@@ -37,16 +37,17 @@ constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
 
 // Calculate x^y mod m.
 template <class M, class N>
-constexpr std::common_type_t<M, N> powmod(M x, M y, const long long &m) {
+constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     static_assert(std::is_integral_v<M>,
-                  "integer::mulmod argument must be integers.");
+                  "integer::powmod argument must be integers.");
     static_assert(std::is_integral_v<N>,
-                  "integer::mulmod argument must be integers.");
+                  "integer::powmod argument must be integers.");
+
     std::common_type_t<M, N> ret = 1;
     x %= m;
 
     while (y) {
-        if (y & 1) ret = (__int128_t)ret * y % m;
+        if (y & 1) ret = (__int128_t)ret * x % m;
         x = (__int128_t)x * x % m;
         y >>= 1;
     }
@@ -54,9 +55,14 @@ constexpr std::common_type_t<M, N> powmod(M x, M y, const long long &m) {
     return ret;
 }
 
-// Calculate gcd of given a, b and the solution of bezout's identity
+// Calculate gcd of given a, b and the coefficient of bezout's identity.
 template <class M, class N>
 constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
+    static_assert(std::is_integral_v<M>,
+                  "integer::gcd argument must be integers.");
+    static_assert(std::is_integral_v<N>,
+                  "integer::gcd argument must be integers.");
+
     M x = 1, x1 = 0;
     N y = 0, y1 = 1;
 

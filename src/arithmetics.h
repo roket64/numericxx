@@ -1,6 +1,7 @@
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
+#include <cstdlib>
 #include <exception>
 #include <tuple>
 #include <type_traits>
@@ -45,14 +46,24 @@ struct solution {
 
 template <class M, class N>
 // Calculate x * y mod m.
-constexpr std::common_type_t<M, N> mulmod(const M &x, const N &y,
-                                          const long long &m) {
+constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
     static_assert(std::is_integral_v<M>,
                   "integer::mulmod argument must be integers.");
     static_assert(std::is_integral_v<N>,
                   "integer::mulmod argument must be integers.");
 
-    std::common_type_t<M, N> ret = (__int128_t)x * y % m;
+    if (m == 0)
+        throw excpetions::DivdiedByZeroException(
+            "modulo value must be not zero.");
+
+    std::common_type_t<M, N> ret = 0;
+
+    while (y) {
+        if (y & 1) ret = (__int128_t)(ret + x) % m;
+        x = (__int128_t)2 * x % m;
+        y >>= 1;
+    }
+
     return ret;
 }
 
@@ -63,6 +74,10 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
                   "integer::powmod argument must be integers.");
     static_assert(std::is_integral_v<N>,
                   "integer::powmod argument must be integers.");
+
+    if (m == 0)
+        throw excpetions::DivdiedByZeroException(
+            "modulo value must be not zero.");
 
     std::common_type_t<M, N> ret = 1;
     x %= m;
@@ -84,10 +99,15 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<N>,
                   "integer::gcd argument must be integers.");
 
+    // maybe this is a bad idea
+    a = std::abs(a);
+    b = std::abs(b);
+
     M x = 1, x1 = 0;
     N y = 0, y1 = 1;
 
     std::common_type_t<M, N> a1 = a, b1 = b;
+
     while (b1) {
         std::common_type_t<M, N> q = a1 / b1;
         std::tie(x, x1) = std::make_tuple(x1, x - q * x1);

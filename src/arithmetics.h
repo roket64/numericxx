@@ -113,8 +113,11 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
         std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
     }
 
-    // positive coefficient of x
-    return integer::solution(a1, x + b / a1, y - a / a1);
+    x = x + b / a1;
+    y = y - a / a1;
+
+    // positive coefficient of a 
+    return integer::solution(a1, x, y);
 }
 }  // namespace integer
 

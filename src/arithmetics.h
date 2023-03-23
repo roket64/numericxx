@@ -98,7 +98,6 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<N>,
                   "integer::gcd argument must be integers.");
 
-    // maybe this is a bad idea
     a = std::abs(a);
     b = std::abs(b);
 
@@ -114,7 +113,8 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
         std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
     }
 
-    return integer::solution(a1, x, y);
+    // positive coefficient of x
+    return integer::solution(a1, x + b / a1, y - a / a1);
 }
 }  // namespace integer
 

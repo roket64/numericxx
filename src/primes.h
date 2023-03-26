@@ -8,6 +8,10 @@
 namespace integer {
 
 namespace details {
+const static int __table32[3]{2, 7, 61};
+const static long long __table64[12]{2,  3,  5,  7,  11, 13,
+                                     17, 19, 23, 29, 31, 37};
+
 template <class T>
 bool __trial_div(const T &n) {
     for (T d = 0; d * d <= n; ++d) {
@@ -29,6 +33,19 @@ bool __check(const long long &n, const long long &a, const long long &d,
 
     return false;
 }
+
+template <class T>
+// Calculate s, d such that n = 2^s * d to given n
+std::pair<T, unsigned int> __decompose(T n) {
+    unsigned int s = 0;
+
+    while (~n & 1) {
+        ++s;
+        n >>= 1;
+    }
+
+    return std::make_pair(n, s);
+}
 }  // namespace details
 
 template <class T>
@@ -39,14 +56,9 @@ bool is_prime(const int &n) {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    int s = 0;
-    int d = n - 1;
-    while (~d & 1) {
-        ++s;
-        d >>= 1;
-    }
+    auto [d, s] = details::__decompose(n - 1);
 
-    for (auto &a : {2, 7, 61}) {
+    for (auto &a : details::__table32) {
         if (n == a) return true;
         if (!details::__check(n, a, d, s)) return false;
     }
@@ -59,15 +71,9 @@ bool is_prime(const long long &n) {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    int s = 0;
-    long long d = n - 1;
-    while (~d & 1LL) {
-        ++s;
-        d >>= 1LL;
-    }
+    auto [d, s] = details::__decompose(n - 1);
 
-    for (auto &a :
-         {2LL, 3LL, 5LL, 7LL, 11LL, 13LL, 17LL, 19LL, 23LL, 29LL, 31LL, 37LL}) {
+    for (auto &a : details::__table64) {
         if (n == a) return true;
         if (!details::__check(n, a, d, s)) return false;
     }

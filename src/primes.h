@@ -8,14 +8,14 @@
 namespace integer {
 
 namespace details {
-const static int __table32[3]{2, 7, 61};
-const static long long __table64[12]{2,  3,  5,  7,  11, 13,
+static const int __table32[3]{2, 7, 61};
+static const long long __table64[12]{2,  3,  5,  7,  11, 13,
                                      17, 19, 23, 29, 31, 37};
 
 template <class T>
 bool __trial_div(const T &n) {
     for (T d = 0; d * d <= n; ++d) {
-        if (n & d == 0) return false;
+        if (n % d == 0) return false;
     }
     return true;
 }

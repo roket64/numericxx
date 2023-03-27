@@ -5,6 +5,9 @@
 #include <exception>
 #include <tuple>
 #include <type_traits>
+#include <vector>
+
+#include "exceptions.h"
 
 // Components for performing integer arithmetics.
 // Includes basic algorithms of number theory.
@@ -12,28 +15,8 @@
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace integer {
 
-namespace excpetions {
-class DivdiedByZeroException : public std::exception {
-   public:
-    DivdiedByZeroException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; }
-
-   private:
-    const char *message;
-};
-
-class ValueOverflowException : public std::exception {
-   public:
-    ValueOverflowException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; }
-
-   private:
-    const char *message;
-};
-}  // namespace excpetions
-
-// Struct for gcd(a, b) and the coefficient of bezout's identity.
 template <class M, class N>
+// Struct for gcd(a, b) and the coefficient of bezout's identity.
 struct solution {
     solution() : g(0), x(0), y(0) {}
     solution(std::common_type_t<M, N> _g, M _x, N _y) : g(_g), x(_x), y(_y) {}
@@ -42,6 +25,38 @@ struct solution {
     M x;                         // coefficient of a
     N y;                         // coefficient of b
 };
+
+namespace functional {
+
+namespace details {
+template <class T>
+std::vector<T> trial_factorial(T n) {
+    std::vector<T> ret;
+
+    for (T d = 1; d * d <= n; ++d) {
+        while (n % d == 0) {
+            ret.push_back(d);
+            n /= d;
+        }
+    }
+    if (n > 1) ret.push_back(n);
+
+    return ret;
+}
+template <class T>
+std::vector<T> pollard_rho(const T &n) {}
+}  // namespace details
+
+template <class T>
+std::vector<T> factorize(const T &n) {}
+
+template <class T, size_t sz>
+class sieve {
+   public:
+   private:
+};
+
+}  // namespace functional
 
 template <class M, class N>
 // Calculate x * y mod m.
@@ -52,7 +67,7 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
                   "integer::mulmod argument must be integers.");
 
     if (m == 0)
-        throw excpetions::DivdiedByZeroException(
+        throw exceptions::DividedByZeroException(
             "modulo value must be not zero.");
 
     std::common_type_t<M, N> ret = 0;
@@ -75,7 +90,7 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
                   "integer::powmod argument must be integers.");
 
     if (m == 0)
-        throw excpetions::DivdiedByZeroException(
+        throw exceptions::DividedByZeroException(
             "modulo value must be not zero.");
 
     std::common_type_t<M, N> ret = 1;
@@ -90,8 +105,8 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     return ret;
 }
 
-// Calculate gcd of given a, b and the coefficient of bezout's identity.
 template <class M, class N>
+// Calculate gcd of given a, b and the coefficient of bezout's identity.
 constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M>,
                   "integer::gcd argument must be integers.");
@@ -113,10 +128,10 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
         std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
     }
 
+    // positive coefficient of a
     x = x + b / a1;
     y = y - a / a1;
 
-    // positive coefficient of a 
     return integer::solution(a1, x, y);
 }
 }  // namespace integer

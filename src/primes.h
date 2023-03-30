@@ -22,11 +22,12 @@ bool __trial_div(const T &n) {
 
 bool __check(const long long &n, const long long &a, const long long &d,
              int s) {
+    // calculate a^d mod n
     long long x = integer::powmod(a, d, n);
 
     if (x == 1 || x == n - 1) return true;
 
-    for (int r = 0; r < s - 1; ++r) {
+    for (int r = 1; r < s; ++r) {
         x = integer::mulmod(x, x, n);
         if (x == n - 1) return true;
     }
@@ -36,8 +37,8 @@ bool __check(const long long &n, const long long &a, const long long &d,
 
 template <class T>
 // Calculate s, d such that n = 2^s * d to given n
-std::pair<T, unsigned int> __decompose(T n) {
-    unsigned int s = 0;
+std::pair<T, unsigned> __expansion(T n) {
+    unsigned s = 0;
 
     while (~n & 1) {
         ++s;
@@ -45,6 +46,21 @@ std::pair<T, unsigned int> __decompose(T n) {
     }
 
     return std::make_pair(n, s);
+}
+
+template<class T>
+std::vector<T> trial_factorization(T n) {
+    std::vector<T> ret;
+
+    for (T i = 2; i * i <= n; ++i) {
+        while (n % i == 0) {
+            ret.push_back(i);
+            n /= i;
+        }
+    }
+    if (n > 1) ret.push_back(n);
+
+    return ret;
 }
 }  // namespace details
 
@@ -56,7 +72,7 @@ bool is_prime(const int &n) {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    auto [d, s] = details::__decompose(n - 1);
+    auto [d, s] = details::__expansion(n - 1);
 
     for (auto &a : details::__table32) {
         if (n == a) return true;
@@ -71,7 +87,7 @@ bool is_prime(const long long &n) {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    auto [d, s] = details::__decompose(n - 1);
+    auto [d, s] = details::__expansion(n - 1);
 
     for (auto &a : details::__table64) {
         if (n == a) return true;

@@ -26,38 +26,6 @@ struct solution {
     N y;                         // coefficient of b
 };
 
-namespace functional {
-
-namespace details {
-template <class T>
-std::vector<T> trial_factorial(T n) {
-    std::vector<T> ret;
-
-    for (T d = 1; d * d <= n; ++d) {
-        while (n % d == 0) {
-            ret.push_back(d);
-            n /= d;
-        }
-    }
-    if (n > 1) ret.push_back(n);
-
-    return ret;
-}
-template <class T>
-std::vector<T> pollard_rho(const T &n) {}
-}  // namespace details
-
-template <class T>
-std::vector<T> factorize(const T &n) {}
-
-template <class T, size_t sz>
-class sieve {
-   public:
-   private:
-};
-
-}  // namespace functional
-
 template <class M, class N>
 // Calculate x * y mod m.
 constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {

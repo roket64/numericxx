@@ -1,6 +1,7 @@
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
+#include <tuple>
 #include <type_traits>
 
 #include "exceptions.h"

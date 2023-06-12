@@ -85,7 +85,7 @@ constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
 }
 
 /**
- * @brief Test a primality of the given n <= 4,759,123,141.
+ * @brief Test a primality of the given n < 4,759,123,141.
  */
 constexpr bool _is_prime_32(const i64 &n) {
     auto [d, s] = details::__expansion(n - 1);
@@ -99,7 +99,7 @@ constexpr bool _is_prime_32(const i64 &n) {
 }
 
 /**
- * @brief Test a primality of the given n > 4,759,123,141.
+ * @brief Test a primality of the given n >= 4,759,123,141.
  */
 constexpr bool _is_prime_64(const i64 &n) {
     auto [d, s] = details::__expansion(n - 1);
@@ -125,7 +125,7 @@ constexpr bool is_prime(const T &n) noexcept {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    if (static_cast<u64>(n) >= 4759123141ULL) {
+    if (static_cast<u64>(n) < 4759123141ULL) {
         return details::_is_prime_32(n);
     } else {
         return details::_is_prime_64(n);

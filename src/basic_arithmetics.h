@@ -29,7 +29,7 @@ struct solution {
  * @brief Calculate x * y (mod m)
  */
 template <class M, class N>
-constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
+constexpr std::common_type_t<M, N> mulmod(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M>,
                   "integer::mulmod argument must be an integers.");
     static_assert(std::is_integral_v<N>,
@@ -37,7 +37,7 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
-            "modulo value must be not zero.");
+            "modulo value must be not a zero.");
 
     std::common_type_t<M, N> ret = 0;
 
@@ -54,7 +54,7 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
  * @brief Calculate x^y (mod m)
  */
 template <class M, class N>
-constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
+constexpr std::common_type_t<M, N> powmod(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M>,
                   "integer::powmod argument must be an integers.");
     static_assert(std::is_integral_v<N>,
@@ -62,7 +62,7 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
-            "modulo value must be not zero.");
+            "modulo value must be not a zero.");
 
     std::common_type_t<M, N> ret = 1;
     x %= m;

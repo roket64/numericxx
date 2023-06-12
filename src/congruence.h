@@ -3,11 +3,14 @@
 
 #include <type_traits>
 
-#include "arithmetics.h"
+#include "basic_arithmetics.h"
 
 // Basic congruence operations
 
 namespace integer {
+    /**
+     *  @brief Solve congruence ax = b (mod m) of x.
+    */
 template <class M, class N>
 constexpr std::common_type_t<M, N> solve(M a, N b, const long long &m) {
     static_assert(std::is_integral_v<M>,

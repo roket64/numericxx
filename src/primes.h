@@ -1,7 +1,6 @@
 #ifndef PRIMES_H
 #define PRIMES_H
 
-#include <type_traits>
 #include <vector>
 
 #include "basic_arithmetics.h"
@@ -9,11 +8,10 @@
 
 namespace integer {
 namespace details {
-static constexpr i32 __table32[3]{
-    2, 7, 61};  // bases to test integer under 4,759,123,141
-static constexpr i64 __table64[12]{
-    2,  3,  5,  7,  11, 13,
-    17, 19, 23, 29, 31, 37};  // bases to test integer under 2^64
+// bases to test integer under 4,759,123,141
+static constexpr i32 __table32[3]{2, 7, 61};
+// bases to test integer under 2^64
+static constexpr i64 __table64[12]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
 
 /**
  * @brief Test the given n is a prime number by trial divison.
@@ -51,10 +49,10 @@ constexpr std::vector<T> trial_factorization(T n) noexcept {
  * @param n An integer should be decomposed to 2^s * d
  */
 template <class T>
-constexpr std::pair<T, unsigned> __expansion(T n) noexcept {
+constexpr std::pair<T, u32> __expansion(T n) noexcept {
     unsigned s = 0;
 
-    while (~n & 1) {
+    while (~n & 1U) {
         ++s;
         n >>= static_cast<T>(1);
     }
@@ -71,9 +69,9 @@ constexpr std::pair<T, unsigned> __expansion(T n) noexcept {
  * @param s An integer from n - 1 = 2^s * d
  */
 constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
-                      i32 s) noexcept {
+                       i32 s) noexcept {
     // calculate a^d mod n
-    long long x = integer::powmod(a, d, n);
+    i64 x = integer::powmod(a, d, n);
 
     // case of a^d = 1 (mod n) or a^d = -1 (mod n)
     if (x == 1 || x == n - 1) return true;
@@ -88,7 +86,7 @@ constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
 
 /**
  * @brief Test a primality of the given n <= 4,759,123,141.
-*/
+ */
 constexpr bool _is_prime_32(const i64 &n) {
     auto [d, s] = details::__expansion(n - 1);
 
@@ -102,7 +100,7 @@ constexpr bool _is_prime_32(const i64 &n) {
 
 /**
  * @brief Test a primality of the given n > 4,759,123,141.
-*/
+ */
 constexpr bool _is_prime_64(const i64 &n) {
     auto [d, s] = details::__expansion(n - 1);
 

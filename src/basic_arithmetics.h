@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "exceptions.h"
+#include "int_types.h"
 
 // Components for performing integer arithmetics.
 // Includes basic algorithms of number theory.
@@ -41,9 +42,9 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
     std::common_type_t<M, N> ret = 0;
 
     while (y) {
-        if (y & 1) ret = (__int128_t)(ret + x) % m;
-        x = (__int128_t)2 * x % m;
-        y >>= 1;
+        if (y & 1) ret = (i128)(ret + x) % m;
+        x = (i128)2 * x % m;
+        y >>= (N)1;
     }
 
     return ret;
@@ -67,9 +68,9 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     x %= m;
 
     while (y) {
-        if (y & 1) ret = (__int128_t)ret * x % m;
-        x = (__int128_t)x * x % m;
-        y >>= 1;
+        if (y & 1) ret = (i128)ret * x % m;
+        x = (i128)x * x % m;
+        y >>= (N)1;
     }
 
     return ret;

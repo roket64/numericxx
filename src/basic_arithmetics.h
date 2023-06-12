@@ -1,6 +1,7 @@
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
+#include <cmath>
 #include <tuple>
 #include <type_traits>
 
@@ -23,13 +24,15 @@ struct solution {
     N y;                         // coefficient of b
 };
 
+/**
+ * @brief Calculate x * y (mod m)
+ */
 template <class M, class N>
-// Calculate x * y mod m.
 constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
     static_assert(std::is_integral_v<M>,
-                  "integer::mulmod argument must be integers.");
+                  "integer::mulmod argument must be an integers.");
     static_assert(std::is_integral_v<N>,
-                  "integer::mulmod argument must be integers.");
+                  "integer::mulmod argument must be an integers.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -46,13 +49,15 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const long long &m) {
     return ret;
 }
 
+/**
+ * @brief Calculate x^y (mod m)
+ */
 template <class M, class N>
-// Calculate x^y mod m.
 constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     static_assert(std::is_integral_v<M>,
-                  "integer::powmod argument must be integers.");
+                  "integer::powmod argument must be an integers.");
     static_assert(std::is_integral_v<N>,
-                  "integer::powmod argument must be integers.");
+                  "integer::powmod argument must be an integers.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -70,13 +75,16 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const long long &m) {
     return ret;
 }
 
+/**
+ * @brief Calculate gcd of the given a, b and the coefficient of the Bezout's
+ * Identity
+ */
 template <class M, class N>
-// Calculate gcd of given a, b and the coefficient of bezout's identity.
 constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M>,
-                  "integer::gcd argument must be integers.");
+                  "integer::gcd argument must be an integers.");
     static_assert(std::is_integral_v<N>,
-                  "integer::gcd argument must be integers.");
+                  "integer::gcd argument must be an integers.");
 
     a = std::abs(a);
     b = std::abs(b);

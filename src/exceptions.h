@@ -14,19 +14,10 @@ class DividedByZeroException : public std::exception {
     const char *message;
 };
 
-class ValueOverFlowException : public std::exception {
+class InvalidSolutionException : public std::exception {
    public:
-    ValueOverFlowException(const char *msg) : message(msg){};
+    InvalidSolutionException(const char *msg) : message(msg){};
     const char *what() const noexcept override { return message; }
-
-   private:
-    const char *message;
-};
-
-class OutOfIndexException : public std::exception {
-   public:
-    OutOfIndexException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; };
 
    private:
     const char *message;

@@ -4,17 +4,16 @@
 #include <vector>
 
 #include "basic_arithmetics.h"
-#include "int_types.h"
 
 namespace integer {
 namespace details {
 // bases to test integer under 4,759,123,141
 static constexpr i32 __table32[3]{2, 7, 61};
-// bases to test integer under 2^64
+// bases to test integer over or equal to 4,759,123,141
 static constexpr i64 __table64[12]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
 
 /**
- * @brief Test the given n is a prime number by trial divison.
+ * @brief Test the given n is a prime number in a quite naive way.
  */
 template <class T>
 constexpr bool trial_division(const T &n) noexcept {
@@ -50,7 +49,7 @@ constexpr std::vector<T> trial_factorization(T n) noexcept {
  */
 template <class T>
 constexpr std::pair<T, u32> __expansion(T n) noexcept {
-    unsigned s = 0;
+    u32 s = 0;
 
     while (~n & 1U) {
         ++s;
@@ -69,14 +68,14 @@ constexpr std::pair<T, u32> __expansion(T n) noexcept {
  * @param s An integer from n - 1 = 2^s * d
  */
 constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
-                       i32 s) noexcept {
+                       u32 s) noexcept {
     // calculate a^d mod n
     i64 x = integer::powmod(a, d, n);
 
     // case of a^d = 1 (mod n) or a^d = -1 (mod n)
     if (x == 1 || x == n - 1) return true;
 
-    for (int r = 1; r < s; ++r) {
+    for (u32 r = 1; r < s; ++r) {
         x = integer::mulmod(x, x, n);
         if (x == n - 1) return true;
     }
@@ -125,7 +124,7 @@ constexpr bool is_prime(const T &n) noexcept {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    if (static_cast<u64>(n) < 4759123141ULL) {
+    if (static_cast<u64>(n) < 4'759'123'141ULL) {
         return details::_is_prime_32(n);
     } else {
         return details::_is_prime_64(n);

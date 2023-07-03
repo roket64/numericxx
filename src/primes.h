@@ -17,7 +17,7 @@ static constexpr i64 __table64[12]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
  */
 template <class T>
 constexpr bool trial_division(const T &n) noexcept {
-    for (T d = 0; d * d <= n; ++d) {
+    for (T d = 2; d * d <= n; ++d) {
         if (n % d == 0) return false;
     }
     return true;
@@ -86,7 +86,7 @@ constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
 /**
  * @brief Test a primality of the given n < 4,759,123,141.
  */
-constexpr bool _is_prime_32(const i64 &n) {
+constexpr bool __is_prime32(const i64 &n) noexcept {
     auto [d, s] = details::__expansion(n - 1);
 
     for (const i32 &a : details::__table32) {
@@ -100,7 +100,7 @@ constexpr bool _is_prime_32(const i64 &n) {
 /**
  * @brief Test a primality of the given n >= 4,759,123,141.
  */
-constexpr bool _is_prime_64(const i64 &n) {
+constexpr bool __is_prime64(const i64 &n) noexcept {
     auto [d, s] = details::__expansion(n - 1);
 
     for (const i64 &a : details::__table64) {
@@ -125,9 +125,9 @@ constexpr bool is_prime(const T &n) noexcept {
     if (n == 2) return true;
 
     if (static_cast<u64>(n) < 4'759'123'141ULL) {
-        return details::_is_prime_32(n);
+        return details::__is_prime32(n);
     } else {
-        return details::_is_prime_64(n);
+        return details::__is_prime64(n);
     }
 }
 }  // namespace integer

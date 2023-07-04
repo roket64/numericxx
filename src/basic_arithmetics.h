@@ -30,7 +30,7 @@ struct solution {
 template <class M, class N>
 constexpr std::common_type_t<M, N> mulmod(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::mulmod argument must be an integers.");
+                  "integer::mulmod argument must be an integer.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -53,7 +53,7 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const i64 &m) {
 template <class M, class N>
 constexpr std::common_type_t<M, N> powmod(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::powmod argument must be an integers.");
+                  "integer::powmod argument must be an integer.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -78,7 +78,7 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const i64 &m) {
 template <class M, class N>
 constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::gcd argument must be an integers.");
+                  "integer::gcd argument must be an integer.");
 
     if (a == 0 || b == 0)
         return integer::solution(0, 0, 0);

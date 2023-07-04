@@ -7,6 +7,8 @@
 
 namespace integer {
 namespace details {
+// maximum value can be tested on fewer bases
+constexpr i64 MILLER_TEST_THRESHOLD = 0x11baa74c5;
 // bases to test integer under 4,759,123,141
 static constexpr i32 __table32[3]{2, 7, 61};
 // bases to test integer over or equal to 4,759,123,141
@@ -48,7 +50,7 @@ constexpr std::vector<T> trial_factorization(T n) noexcept {
  * @param n An integer should be decomposed to 2^s * d
  */
 template <class T>
-constexpr std::pair<T, u32> __expansion(T n) noexcept {
+constexpr std::pair<T, u32> __binary_expansion(T n) noexcept {
     u32 s = 0;
 
     while (~n & 1U) {
@@ -87,7 +89,7 @@ constexpr bool __check(const i64 &n, const i64 &a, const i64 &d,
  * @brief Test a primality of the given n < 4,759,123,141.
  */
 constexpr bool __is_prime32(const i64 &n) noexcept {
-    auto [d, s] = details::__expansion(n - 1);
+    auto [d, s] = details::__binary_expansion(n - 1);
 
     for (const i32 &a : details::__table32) {
         if (n == a) return true;
@@ -101,7 +103,7 @@ constexpr bool __is_prime32(const i64 &n) noexcept {
  * @brief Test a primality of the given n >= 4,759,123,141.
  */
 constexpr bool __is_prime64(const i64 &n) noexcept {
-    auto [d, s] = details::__expansion(n - 1);
+    auto [d, s] = details::__binary_expansion(n - 1);
 
     for (const i64 &a : details::__table64) {
         if (n == a) return true;
@@ -124,7 +126,7 @@ constexpr bool is_prime(const T &n) noexcept {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    if (static_cast<u64>(n) < 4'759'123'141ULL) {
+    if (static_cast<i64>(n) < details::MILLER_TEST_THRESHOLD) {
         return details::__is_prime32(n);
     } else {
         return details::__is_prime64(n);

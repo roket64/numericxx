@@ -1,5 +1,5 @@
-#ifndef ARITHMETICS_H
-#define ARITHMETICS_H
+#ifndef BASIC_ARITHMETICS_H
+#define BASIC_ARITHMETICS_H
 
 #include <cmath>
 #include <tuple>

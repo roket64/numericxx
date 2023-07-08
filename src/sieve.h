@@ -9,10 +9,15 @@ namespace integer {
 class Sieve {
    private:
     u64 size_;
+    // list of primes
     std::vector<u64> prime;
+    // smallest prime factor
     std::vector<u64> spf;
+    // euler phi function
     std::vector<u64> phi;
+    // exponent
     std::vector<u64> exp;
+    // mobious function
     std::vector<u64> mob;
 
    public:
@@ -56,7 +61,7 @@ class Sieve {
 
     template <class T>
     constexpr bool is_prime(const T &k) noexcept {
-        if (k == 1) return false;
+        if (k <= 1) return false;
         return this->spf[k] == k;
     }
 

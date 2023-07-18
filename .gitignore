@@ -9,3 +9,6 @@ main.cpp
 # CMakefiles
 /build/
 CMakeLists.txt
+
+# Input files
+input.txt

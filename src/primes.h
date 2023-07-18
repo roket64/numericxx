@@ -128,9 +128,9 @@ constexpr bool is_prime(const T &n) noexcept {
 
     if (static_cast<i64>(n) < details::MILLER_TEST_THRESHOLD) {
         return details::__is_prime32(n);
-    } else {
-        return details::__is_prime64(n);
-    }
+    } 
+
+    return details::__is_prime64(n);
 }
 }  // namespace integer
 

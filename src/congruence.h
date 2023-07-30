@@ -17,15 +17,15 @@ namespace congruence {
  *  @param m A modular value from ax = b (mod m)
  */
 template <class M, class N, class T>
-constexpr std::vector<std::common_type_t<M, N>> solve(const M &a, const N &b, const T &m) {
+constexpr std::vector<std::common_type_t<M, N>> SolveCongruence(const M &a, const N &b, const T &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::congruence::solve argument must be integers.");
+                  "integer::congruence::SolveCongruence argument must be integers.");
     static_assert(std::is_integral_v<T>,
-                  "integer::congruence::solve argument must be integers.");
+                  "integer::congruence::SolveCongruence argument must be integers.");
 
     std::vector<std::common_type_t<M, N>> ret;
 
-    auto [g, u, v] = integer::gcd(a, m);
+    auto [g, u, v] = integer::ExtendedGcd(a, m);
 
     if (b % g)
         throw exceptions::InvalidSolutionException(

@@ -10,7 +10,7 @@ namespace base64 {
 static const std::string base64_chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-std::string encode(const std::string &text) {
+std::string Encode(const std::string &text) {
     std::string ret;
 
     u32 val = 0;
@@ -33,7 +33,7 @@ std::string encode(const std::string &text) {
     return ret;
 }
 
-std::string decode(const std::string &text) {
+std::string Decode(const std::string &text) {
     std::string ret;
 
     std::vector<int> T(256, -1);

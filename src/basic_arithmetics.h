@@ -15,9 +15,9 @@
 namespace integer {
 template <class M, class N>
 // Struct for gcd(a, b) and the coefficient of bezout's identity.
-struct solution {
-    solution() : g(0), x(0), y(0) {}
-    solution(std::common_type_t<M, N> _g, M _x, N _y) : g(_g), x(_x), y(_y) {}
+struct BezoutSolution {
+    BezoutSolution() : g(0), x(0), y(0) {}
+    BezoutSolution(std::common_type_t<M, N> _g, M _x, N _y) : g(_g), x(_x), y(_y) {}
 
     std::common_type_t<M, N> g;  // gcd of a, b
     M x;                         // coefficient of a
@@ -28,9 +28,9 @@ struct solution {
  * @brief Calculate x * y (mod m)
  */
 template <class M, class N>
-constexpr std::common_type_t<M, N> mulmod(M x, N y, const i64 &m) {
+constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::mulmod argument must be an integer.");
+                  "integer::ModularMultiply argument must be an integer.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -51,9 +51,9 @@ constexpr std::common_type_t<M, N> mulmod(M x, N y, const i64 &m) {
  * @brief Calculate x^y (mod m)
  */
 template <class M, class N>
-constexpr std::common_type_t<M, N> powmod(M x, N y, const i64 &m) {
+constexpr std::common_type_t<M, N> ModularExp(M x, N y, const i64 &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::powmod argument must be an integer.");
+                  "integer::ModularExp argument must be an integer.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
@@ -72,16 +72,16 @@ constexpr std::common_type_t<M, N> powmod(M x, N y, const i64 &m) {
 }
 
 /**
- * @brief Calculate gcd of the given a, b and the coefficient of the Bezout's
+ * @brief Calculate gcd of the given a, b and the positive coefficient of the Bezout's
  * Identity
  */
 template <class M, class N>
-constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
+constexpr integer::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::gcd argument must be an integer.");
+                  "integer::ExtendedGcd argument must be an integer.");
 
     if (a == 0 || b == 0)
-        return integer::solution(0, 0, 0);
+        return integer::BezoutSolution(0, 0, 0);
 
     a = std::abs(a);
     b = std::abs(b);
@@ -102,7 +102,7 @@ constexpr integer::solution<M, N> gcd(M a, N b) noexcept {
     x = x + b / a1;
     y = y - a / a1;
 
-    return integer::solution(a1, x, y);
+    return integer::BezoutSolution(a1, x, y);
 }
 }  // namespace integer
 

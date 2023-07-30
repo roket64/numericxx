@@ -10,52 +10,52 @@ class Sieve {
    private:
     u64 size_;
     // list of primes
-    std::vector<u64> prime;
+    std::vector<u64> prime_;
     // smallest prime factor
-    std::vector<u64> spf;
+    std::vector<u64> spf_;
     // euler phi function
-    std::vector<u64> phi;
+    std::vector<u64> phi_;
     // exponent
-    std::vector<u64> exp;
+    std::vector<u64> exp_;
     // mobious function
-    std::vector<u64> mob;
+    std::vector<u64> mob_;
 
    public:
     Sieve(const u64 &sz) : size_(sz) {
-        this->spf.assign(sz + 1, 0);
-        this->phi.assign(sz + 1, 0);
-        this->exp.assign(sz + 1, 0);
-        this->mob.assign(sz + 1, 0);
-        this->mob.size();
+        this->spf_.assign(sz + 1, 0);
+        this->phi_.assign(sz + 1, 0);
+        this->exp_.assign(sz + 1, 0);
+        this->mob_.assign(sz + 1, 0);
+        this->mob_.size();
 
-        this->phi[1] = 1;
-        this->mob[1] = 1;
+        this->phi_[1] = 1;
+        this->mob_[1] = 1;
 
         for (u64 i = 2; i < sz + 1; ++i) {
-            if (this->spf[i] == 0) {
-                this->spf[i] = i;
-                this->phi[i] = i - 1;
-                this->exp[i] = 1;
-                this->mob[i] = -1;
-                this->prime.push_back(i);
+            if (this->spf_[i] == 0) {
+                this->spf_[i] = i;
+                this->phi_[i] = i - 1;
+                this->exp_[i] = 1;
+                this->mob_[i] = -1;
+                this->prime_.push_back(i);
             }
 
-            for (auto &p : this->prime) {
+            for (auto &p : this->prime_) {
                 u64 pos = i * p;
 
                 if (pos > sz) break;
 
-                this->spf[pos] = p;
-                this->phi[pos] = this->phi[i] * p;
-                this->exp[pos] = this->exp[i] * p;
-                this->mob[pos] = 0;
+                this->spf_[pos] = p;
+                this->phi_[pos] = this->phi_[i] * p;
+                this->exp_[pos] = this->exp_[i] * p;
+                this->mob_[pos] = 0;
 
                 if (i % p == 0) break;
             }
         }
     }
 
-    constexpr std::vector<u64> &primes() noexcept { return this->prime; }
+    constexpr std::vector<u64> &primes() noexcept { return this->prime_; }
 
     constexpr u64 size() noexcept { return this->size_; }
 

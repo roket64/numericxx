@@ -7,29 +7,29 @@ namespace integer {
 namespace exceptions {
 class DividedByZeroException : public std::exception {
    public:
-    DividedByZeroException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; };
+    DividedByZeroException(const char *msg) : message_(msg){};
+    const char *what() const noexcept override { return message_; };
 
    private:
-    const char *message;
+    const char *message_;
 };
 
 class OverFlowException : public std::exception {
    public:
-    OverFlowException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; };
+    OverFlowException(const char *msg) : message_(msg){};
+    const char *what() const noexcept override { return message_; };
 
    private:
-    const char *message;
+    const char *message_;
 };
 
 class InvalidSolutionException : public std::exception {
    public:
-    InvalidSolutionException(const char *msg) : message(msg){};
-    const char *what() const noexcept override { return message; }
+    InvalidSolutionException(const char *msg) : message_(msg){};
+    const char *what() const noexcept override { return message_; }
 
    private:
-    const char *message;
+    const char *message_;
 };
 }  // namespace exceptions
 }  // namespace integer

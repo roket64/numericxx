@@ -1,3 +1,8 @@
+/**
+ * @file arithmetics.h
+ * @brief Components for performing integer arithmetics.
+ */
+
 #ifndef ARITHMETICS_H
 #define ARITHMETICS_H
 
@@ -5,11 +10,8 @@
 #include <tuple>
 #include <type_traits>
 
+#include "configs/config.h"
 #include "exceptions.h"
-#include "int_types.h"
-
-// Components for performing integer arithmetics.
-// Includes basic algorithms of number theory.
 
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace integer {

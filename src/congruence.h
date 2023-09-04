@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "basic_arithmetics.h"
+#include "arithmetics.h"
 #include "exceptions.h"
 
 // Basic congruence operations
@@ -11,17 +11,17 @@
 namespace integer {
 namespace congruence {
 /**
- *  @brief Solve congruence ax = b (mod m) for all possible x.
+ *  @brief Solves congruence ax = b (mod m) for all possible x.
  *  @param a An integer from ax = b (mod m)
  *  @param b An integer from ax = b (mod m)
  *  @param m A modular value from ax = b (mod m)
  */
 template <class M, class N, class T>
-constexpr std::vector<std::common_type_t<M, N>> SolveCongruence(const M &a, const N &b, const T &m) {
+constexpr std::vector<std::common_type_t<M, N>> Solve(const M &a, const N &b, const T &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::congruence::SolveCongruence argument must be integers.");
+                  "integer::congruence::Solve argument must be integers.");
     static_assert(std::is_integral_v<T>,
-                  "integer::congruence::SolveCongruence argument must be integers.");
+                  "integer::congruence::Solve argument must be integers.");
 
     std::vector<std::common_type_t<M, N>> ret;
 

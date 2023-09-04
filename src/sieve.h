@@ -6,6 +6,10 @@
 #include "int_types.h"
 
 namespace integer {
+/**
+ * @brief Basic implementation of Linear Sieve and some multiplication functions.
+ * @param sz A size of the sieve.
+ */
 class Sieve {
    private:
     u64 size_;
@@ -26,7 +30,7 @@ class Sieve {
         this->phi_.assign(sz + 1, 0);
         this->exp_.assign(sz + 1, 0);
         this->mob_.assign(sz + 1, 0);
-        this->mob_.size();
+        this->mob_.assign(sz + 1, 0);
 
         this->phi_[1] = 1;
         this->mob_[1] = 1;
@@ -55,34 +59,59 @@ class Sieve {
         }
     }
 
+    /**
+     * @brief Returns list of prime numbers of the sieve.
+     */
     constexpr std::vector<u64> &primes() noexcept { return this->prime_; }
 
+    /**
+     * @brief Returns size of the sieve.
+     */
     constexpr u64 size() noexcept { return this->size_; }
 
+    /**
+     * @brief Returns whether an integer prime number.
+     */
     template <class T>
-    constexpr bool is_prime(const T &k) noexcept {
-        if (k <= 1) return false;
-        return this->spf[k] == k;
+    constexpr bool IsPrime(const T &k) noexcept {
+        return (k <= 1 ? false : this->spf_[k] == k);
+    }
+
+    /**
+     *  @brief Returns smallest prime factor of an integer.
+     */
+    template <class T>
+    constexpr u64 SmallestPrimeFactor(const T &k) noexcept {
+        return this->spf_[k];
+    }
+
+    /**
+     * @brief Returns Euler Phi Funtion value of an integer.
+     */
+    template <class T>
+    constexpr u64 Phi(const T &k) noexcept {
+        return this->phi_[k];
     }
 
     template <class T>
-    constexpr u64 smallest_p_factor(const T &k) noexcept {
-        return this->spf[k];
+    constexpr u64 Exponent(const T &k) noexcept {
+        return this->exp_[k];
     }
 
+    /**
+     * @brief Returns Mobius Function value of an integer.
+     */
     template <class T>
-    constexpr u64 euler_phi(const T &k) noexcept {
-        return this->phi[k];
+    constexpr u64 Mobius(const T &k) noexcept {
+        return this->mob_[k];
     }
 
+    /**
+     * @brief Returns nth prime number of current sieve.
+     */
     template <class T>
-    constexpr u64 exponent(const T &k) noexcept {
-        return this->exp[k];
-    }
-
-    template <class T>
-    constexpr u64 mobius(const T &k) noexcept {
-        return this->mob[k];
+    constexpr u64 at(const T &n) noexcept {
+        return this->prime_.at(n - 1);
     }
 };  // class Sieve
 }  // namespace integer

@@ -3,30 +3,34 @@
 
 #include <vector>
 
-#include "basic_arithmetics.h"
+#include "arithmetics.h"
 
 namespace integer {
 namespace details {
-// maximum value can be tested on fewer bases
-constexpr i64 kMILLER_TEST_THRESHOLD = 0x11baa74c5;
-// bases to test integer under 4,759,123,141
+// Maximum value can be tested on fewer bases
+constexpr i64 kMillerTestThreshold = 0x11baa74c5;
+// Bases to test integer under 4,759,123,141
 static constexpr i32 table32_[3]{2, 7, 61};
-// bases to test integer over or equal to 4,759,123,141
+// Bases to test integer over or equal to 4,759,123,141
 static constexpr i64 table64_[12]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
 
 /**
- * @brief Test the given n is a prime number in a quite naive way.
+ * @brief Tests the given n is a prime number in a quite naive way.
  */
 template <class T>
 constexpr bool TrialDivision(const T &n) noexcept {
+    if (n <= 1) return false;
+    if (n == 2) return true;
+
     for (u64 d = 2; d * d <= n; ++d) {
         if (n % d == 0) return false;
     }
+
     return true;
 }
 
 /**
- * @brief Factorization of the given n in a quite naive way.
+ * @brief Factorizes of the given n in a quite naive way.
  * @param n An integer should be factorized
  */
 template <class T>
@@ -46,7 +50,7 @@ constexpr std::vector<T> TrialFactorization(T n) noexcept {
 }
 
 /**
- * @brief Calculate the s, d such that n = 2^s * d to given n.
+ * @brief Calculates the s, d such that n = 2^s * d to given n.
  * @param n An integer should be decomposed to 2^s * d
  */
 template <class T>
@@ -62,7 +66,7 @@ constexpr std::pair<T, u32> BinaryExpansion(T n) noexcept {
 }
 
 /**
- * @brief Check the given n satisfies a^d = 1 (mod n) or a^d = -1 (mod n), or
+ * @brief Checks the given n satisfies a^d = 1 (mod n) or a^d = -1 (mod n), or
  * some a^r = -1 (mod m).
  * @param n An integer should be tested
  * @param a An integer coprime to n
@@ -86,7 +90,7 @@ constexpr bool MillerRabinTest(const i64 &n, const i64 &a, const i64 &d,
 }
 
 /**
- * @brief Test a primality of the given n < 4,759,123,141.
+ * @brief Tests a primality of the given integer less than 4,759,123,141.
  */
 constexpr bool IsPrime32(const i64 &n) noexcept {
     auto [d, s] = details::BinaryExpansion(n - 1);
@@ -100,10 +104,10 @@ constexpr bool IsPrime32(const i64 &n) noexcept {
 }
 
 /**
- * @brief Test a primality of the given n >= 4,759,123,141.
+ * @brief Tests a primality of the given integer greater than 4,759,123,141.
  */
 constexpr bool IsPrime64(const i64 &n) noexcept {
-    auto [d, s] = details::BinaryExpansion(n - 1);
+    const auto [d, s] = details::BinaryExpansion(n - 1);
 
     for (const i64 &a : details::table64_) {
         if (n == a) return true;
@@ -126,7 +130,7 @@ constexpr bool IsPrime(const T &n) noexcept {
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    if (static_cast<i64>(n) < details::kMILLER_TEST_THRESHOLD) {
+    if (static_cast<i64>(n) < details::kMillerTestThreshold) {
         return details::IsPrime32(n);
     } 
 

@@ -1,5 +1,5 @@
-#ifndef BASIC_ARITHMETICS_H
-#define BASIC_ARITHMETICS_H
+#ifndef ARITHMETICS_H
+#define ARITHMETICS_H
 
 #include <cmath>
 #include <tuple>
@@ -14,18 +14,19 @@
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace integer {
 template <class M, class N>
-// Struct for gcd(a, b) and the coefficient of bezout's identity.
+// Greatest common divisor of a, b and integer solution of Bezout's Identity.
 struct BezoutSolution {
-    BezoutSolution() : g(0), x(0), y(0) {}
-    BezoutSolution(std::common_type_t<M, N> _g, M _x, N _y) : g(_g), x(_x), y(_y) {}
+    BezoutSolution() : d(0L), x(0L), y(0L) {}
+    BezoutSolution(std::common_type_t<M, N> _g, M _x, N _y)
+        : d(_g), x(_x), y(_y) {}
 
-    std::common_type_t<M, N> g;  // gcd of a, b
+    std::common_type_t<M, N> d;  // gcd of a, b
     M x;                         // coefficient of a
     N y;                         // coefficient of b
 };
 
 /**
- * @brief Calculate x * y (mod m)
+ * @brief Calculates x * y modulo m.
  */
 template <class M, class N>
 constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
@@ -48,7 +49,7 @@ constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
 }
 
 /**
- * @brief Calculate x^y (mod m)
+ * @brief Calculates x^y modulo m.
  */
 template <class M, class N>
 constexpr std::common_type_t<M, N> ModularExp(M x, N y, const i64 &m) {
@@ -72,16 +73,15 @@ constexpr std::common_type_t<M, N> ModularExp(M x, N y, const i64 &m) {
 }
 
 /**
- * @brief Calculate gcd of the given a, b and the positive coefficient of the Bezout's
- * Identity
+ * @brief Calculates gcd of the a, b and the positive solution of the Bezout's
+ * Identity.
  */
 template <class M, class N>
 constexpr integer::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
                   "integer::ExtendedGcd argument must be an integer.");
 
-    if (a == 0 || b == 0)
-        return integer::BezoutSolution(0, 0, 0);
+    if (a == 0 || b == 0) return integer::BezoutSolution(0, 0, 0);
 
     a = std::abs(a);
     b = std::abs(b);
@@ -98,7 +98,7 @@ constexpr integer::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
         std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
     }
 
-    // positive coefficient of a
+    // make a's coefficient to positive integer
     x = x + b / a1;
     y = y - a / a1;
 

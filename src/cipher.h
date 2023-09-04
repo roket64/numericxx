@@ -5,15 +5,15 @@
 #include <type_traits>
 #include <vector>
 
-#include "basic_arithmetics.h"
+#include "arithmetics.h"
 #include "exceptions.h"
 
 // Basic implementation of RSA encryption and decryption.
 namespace integer {
 namespace cipher {
-template <class M, class key_t = i64>
-std::vector<M> encrypt(std::vector<M> a, const key_t &k, const key_t &p,
-                       const key_t &q) noexcept {
+template <class M, class N = i64>
+std::vector<M> Encrypt(std::vector<M> a, const N &k, const N &p,
+                       const N &q) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<key_t>,
                   "integer::cipher::encrypt argument must be integer.");
 
@@ -27,11 +27,11 @@ std::vector<M> encrypt(std::vector<M> a, const key_t &k, const key_t &p,
 }
 
 template <class M>
-std::vector<M> decrypt(std::vector<M> a, const long long &k, const long long &m,
-                       const long long &key) {
-    long long phi = (key - 1) * (m / key - 1);
+std::vector<M> Decrypt(std::vector<M> a, const i64 &k, const i64 &m,
+                       const i64 &key) {
+    i64 phi = (key - 1) * (m / key - 1);
 
-    auto [g, u, v] = integer::gcd(k, phi);
+    const auto [g, u, v] = integer::gcd(k, phi);
 
     if (g != 1)
         throw exceptions::InvalidSolutionException(

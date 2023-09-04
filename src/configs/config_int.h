@@ -1,5 +1,14 @@
-#ifndef INT_TYPES_H
-#define INT_TYPES_H
+/**
+ * @file config_int.h
+ * @brief Defines integer types and their limits.
+ */
+
+#ifndef CONFIG_INT_H
+#define CONFIG_INT_H
+
+#include "config_versions.h"
+
+namespace integer {
 
 typedef short i16;
 typedef unsigned short u16;
@@ -8,7 +17,7 @@ typedef int i32;
 typedef unsigned int u32;
 
 typedef long long i64;
-typedef unsigned long long u64;
+typedef long long u64;
 
 constexpr i16 I16_MAX = 32767;
 constexpr i16 I16_MIN = -32768;
@@ -22,4 +31,6 @@ constexpr i64 I64_MAX = 9223372036854775807;
 constexpr i64 I64_MIN = -9223372036854775808;
 constexpr u64 U64_MAX = 18446744073709551615;
 
-#endif  // int_types.h
+}  // namespace integer
+
+#endif  // config_int.h

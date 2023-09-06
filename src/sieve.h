@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "int_types.h"
+#include "configs/config.h"
 
-namespace integer {
+namespace numericxx {
 /**
  * @brief Basic implementation of Linear Sieve and some multiplication functions.
  * @param sz A size of the sieve.

@@ -8,7 +8,7 @@
 
 #include "config_versions.h"
 
-namespace integer {
+namespace numericxx {
 
 typedef short i16;
 typedef unsigned short u16;
@@ -28,9 +28,9 @@ typedef unsigned long long u64;
 
 #endif
 
-#if (defined(__GNUC__) || defined(__GNUG__)) ||               \
-    (defined(__NUMERICXX_MSC_VERSION) && (defined(_M_X64)) || \
-     defined(_M_IA64)) ||                                     \
+#if (defined(__GNUC__) || defined(__GNUG__)) ||  \
+    (defined(__NUMERICXX_MSC_VERSION) &&         \
+     ((defined(_M_X64)) || defined(_M_IA64))) || \
     (defined(__INTEL_COMPILER) && defined(__x86_64__))
 
 #if ((NUMERICXX_GCC_VERSION >= 30400) ||          \
@@ -50,12 +50,12 @@ constexpr u16 U16_MAX = 65535;
 
 constexpr i32 I32_MAX = 2147483647;
 constexpr i32 I32_MIN = -2147483648;
-constexpr u32 U32_MAX = 4294967295;
+constexpr u32 U32_MAX = 4294967295u;
 
-constexpr i64 I64_MAX = 9223372036854775807;
-constexpr i64 I64_MIN = -9223372036854775808;
-constexpr u64 U64_MAX = 18446744073709551615;
+constexpr i64 I64_MAX = 9223372036854775807ll;
+constexpr i64 I64_MIN = -9223372036854775807ll - 1ll;
+constexpr u64 U64_MAX = 0xffffffffffffffffull;
 
-}  // namespace integer
+}  // namespace numericxx
 
 #endif  // config_int.h

@@ -3,7 +3,7 @@
 
 #include "exception"
 
-namespace integer {
+namespace numericxx {
 namespace exceptions {
 class DividedByZeroException : public std::exception {
    public:

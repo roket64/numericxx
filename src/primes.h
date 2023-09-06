@@ -5,10 +5,10 @@
 
 #include "arithmetics.h"
 
-namespace integer {
+namespace numericxx {
 namespace details {
 // Maximum value can be tested on fewer bases
-constexpr i64 kMillerTestThreshold = 0x11baa74c5;
+constexpr i64 kMillerTestThreshold = 0x11baa74c5ll;
 // Bases to test integer under 4,759,123,141
 static constexpr i32 table32_[3]{2, 7, 61};
 // Bases to test integer over or equal to 4,759,123,141
@@ -76,13 +76,13 @@ constexpr std::pair<T, u32> BinaryExpansion(T n) noexcept {
 constexpr bool MillerRabinTest(const i64 &n, const i64 &a, const i64 &d,
                        u32 s) noexcept {
     // calculate a^d mod n
-    i64 x = integer::ModularExp(a, d, n);
+    i64 x = numericxx::ModularExp(a, d, n);
 
     // case of a^d = 1 (mod n) or a^d = -1 (mod n)
     if (x == 1 || x == n - 1) return true;
 
     for (u32 r = 1; r < s; ++r) {
-        x = integer::ModularMultiply(x, x, n);
+        x = numericxx::ModularMultiply(x, x, n);
         if (x == n - 1) return true;
     }
 

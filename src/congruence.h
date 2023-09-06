@@ -8,7 +8,7 @@
 
 // Basic congruence operations
 
-namespace integer {
+namespace numericxx  {
 namespace congruence {
 /**
  *  @brief Solves congruence ax = b (mod m) for all possible x.

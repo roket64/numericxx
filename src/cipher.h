@@ -9,7 +9,7 @@
 #include "exceptions.h"
 
 // Basic implementation of RSA encryption and decryption.
-namespace integer {
+namespace numericxx {
 namespace cipher {
 template <class M, class N = i64>
 std::vector<M> Encrypt(std::vector<M> a, const N &k, const N &p,

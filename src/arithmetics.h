@@ -14,7 +14,7 @@
 #include "exceptions.h"
 
 // Basic integer arithmetics, no support for real numbers or complexes.
-namespace integer {
+namespace numericxx {
 template <class M, class N>
 // Greatest common divisor of a, b and integer solution of Bezout's Identity.
 struct BezoutSolution {
@@ -53,16 +53,17 @@ constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
 /**
  * @brief Calculates x^y modulo m.
  */
-template <class M, class N>
-constexpr std::common_type_t<M, N> ModularExp(M x, N y, const i64 &m) {
+template <class M, class N, class T>
+constexpr std::common_type_t<M, N> ModularExp(M x, N y, const T &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
                   "integer::ModularExp argument must be an integer.");
-
+    static_assert(std::is_integral_v<T>,
+                  "integer::ModularExp modulo value must be an integer.");
     if (m == 0)
         throw exceptions::DividedByZeroException(
             "modulo value must be not a zero.");
 
-    std::common_type_t<M, N> ret = 1;
+    std::common_type_t<M, T> ret = 1;
     x %= m;
 
     while (y) {
@@ -79,11 +80,11 @@ constexpr std::common_type_t<M, N> ModularExp(M x, N y, const i64 &m) {
  * Identity.
  */
 template <class M, class N>
-constexpr integer::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
+constexpr numericxx::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
                   "integer::ExtendedGcd argument must be an integer.");
 
-    if (a == 0 || b == 0) return integer::BezoutSolution(0, 0, 0);
+    if (a == 0 || b == 0) return numericxx::BezoutSolution(0, 0, 0);
 
     a = std::abs(a);
     b = std::abs(b);
@@ -104,7 +105,7 @@ constexpr integer::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
     x = x + b / a1;
     y = y - a / a1;
 
-    return integer::BezoutSolution(a1, x, y);
+    return numericxx::BezoutSolution(a1, x, y);
 }
 }  // namespace integer
 

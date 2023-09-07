@@ -4,11 +4,12 @@
 #include <vector>
 
 #include "arithmetics.h"
+#include "utilities.h"
 
 namespace numericxx {
 namespace details {
 // Maximum value can be tested on fewer bases
-constexpr i64 kMillerTestThreshold = 0x11baa74c5ll;
+constexpr i64 MILLER_TEST_THRESHOLD = 0x11baa74c5ll;
 // Bases to test integer under 4,759,123,141
 static constexpr i32 table32_[3]{2, 7, 61};
 // Bases to test integer over or equal to 4,759,123,141
@@ -19,6 +20,9 @@ static constexpr i64 table64_[12]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
  */
 template <class T>
 constexpr bool TrialDivision(const T &n) noexcept {
+    static_assert(std::is_integral_v<T>,
+                  "integer::TrialDivision argument must be integers.");
+
     if (n <= 1) return false;
     if (n == 2) return true;
 
@@ -35,6 +39,9 @@ constexpr bool TrialDivision(const T &n) noexcept {
  */
 template <class T>
 constexpr std::vector<T> TrialFactorization(T n) noexcept {
+    static_assert(std::is_integral_v<T>,
+                  "integer::TrialFactorization argument must be integers.");
+
     std::vector<T> ret;
 
     for (T i = 2; i * i <= n; ++i) {
@@ -44,43 +51,28 @@ constexpr std::vector<T> TrialFactorization(T n) noexcept {
         }
     }
 
-    if (n > 1) ret.push_back(n);
+    if (n != 1) ret.push_back(n);
 
     return ret;
 }
 
 /**
- * @brief Calculates the s, d such that n = 2^s * d to given n.
- * @param n An integer should be decomposed to 2^s * d
- */
-template <class T>
-constexpr std::pair<T, u32> BinaryExpansion(T n) noexcept {
-    u32 s = 0;
-
-    while (~n & 1U) {
-        ++s;
-        n >>= static_cast<T>(1);
-    }
-
-    return std::make_pair(n, s);
-}
-
-/**
- * @brief Checks the given n satisfies a^d = 1 (mod n) or a^d = -1 (mod n), or
- * some a^r = -1 (mod m).
+ * @brief Checks the given n satisfies a^d = 1 (mod n) or
+ * a^((2^r) * d) = -1 (mod m) for some r(0 <= r < s).
  * @param n An integer should be tested
  * @param a An integer coprime to n
  * @param d An integer from n - 1 = 2^s * d
  * @param s An integer from n - 1 = 2^s * d
  */
-constexpr bool MillerRabinTest(const i64 &n, const i64 &a, const i64 &d,
-                       u32 s) noexcept {
+constexpr bool MillerRabinTest(const u64 &n, const u64 &a, const i64 &d,
+                               u16 s) noexcept {
     // calculate a^d mod n
     i64 x = numericxx::ModularExp(a, d, n);
 
     // case of a^d = 1 (mod n) or a^d = -1 (mod n)
     if (x == 1 || x == n - 1) return true;
 
+    // finding r satisfies a^((2^r) * d) = -1 (mod n)
     for (u32 r = 1; r < s; ++r) {
         x = numericxx::ModularMultiply(x, x, n);
         if (x == n - 1) return true;
@@ -92,8 +84,8 @@ constexpr bool MillerRabinTest(const i64 &n, const i64 &a, const i64 &d,
 /**
  * @brief Tests a primality of the given integer less than 4,759,123,141.
  */
-constexpr bool IsPrime32(const i64 &n) noexcept {
-    auto [d, s] = details::BinaryExpansion(n - 1);
+constexpr bool IsPrime32(const u64 &n) noexcept {
+    const auto [d, s] = numericxx::BinaryExpansion(n - 1);
 
     for (const i32 &a : details::table32_) {
         if (n == a) return true;
@@ -106,8 +98,8 @@ constexpr bool IsPrime32(const i64 &n) noexcept {
 /**
  * @brief Tests a primality of the given integer greater than 4,759,123,141.
  */
-constexpr bool IsPrime64(const i64 &n) noexcept {
-    const auto [d, s] = details::BinaryExpansion(n - 1);
+constexpr bool IsPrime64(const u64 &n) noexcept {
+    const auto [d, s] = numericxx::BinaryExpansion(n - 1);
 
     for (const i64 &a : details::table64_) {
         if (n == a) return true;
@@ -119,7 +111,7 @@ constexpr bool IsPrime64(const i64 &n) noexcept {
 }  // namespace details
 
 /**
- * @brief Test a primality of the given n.
+ * @brief Returns whether the given n is a prime number.
  * @param n An integer should be tested
  */
 template <class T>
@@ -127,15 +119,13 @@ constexpr bool IsPrime(const T &n) noexcept {
     static_assert(std::is_integral_v<T>,
                   "integer::IsPrime argument must be an integer.");
 
+    // all neagtive integers are not prime
     if (n <= 1) return false;
     if (n == 2) return true;
 
-    if (static_cast<i64>(n) < details::kMillerTestThreshold) {
-        return details::IsPrime32(n);
-    } 
-
-    return details::IsPrime64(n);
+    return (n < detials::MILLER_TEST_THRESHOLD) ? details::IsPrime32(n)
+                                                : details::IsPrime64(n);
 }
-}  // namespace integer
+}  // namespace numericxx
 
 #endif  // primes.h

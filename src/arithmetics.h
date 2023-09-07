@@ -12,34 +12,30 @@
 
 #include "configs/config.h"
 #include "exceptions.h"
+#include "validator.h"
 
 // Basic integer arithmetics, no support for real numbers or complexes.
 namespace numericxx {
-template <class M, class N>
-// Greatest common divisor of a, b and integer solution of Bezout's Identity.
-struct BezoutSolution {
-    BezoutSolution() : d(0L), x(0L), y(0L) {}
-    BezoutSolution(std::common_type_t<M, N> _g, M _x, N _y)
-        : d(_g), x(_x), y(_y) {}
-
-    std::common_type_t<M, N> d;  // gcd of a, b
-    M x;                         // coefficient of a
-    N y;                         // coefficient of b
-};
-
 /**
  * @brief Calculates x * y modulo m.
  */
-template <class M, class N>
-constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
+template <class M, class N, class ModuloType>
+constexpr std::common_type_t<M, ModuloType> ModularMultiply(
+    M x, N y, const ModuloType &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::ModularMultiply argument must be an integer.");
+                  "numericxx::ModularMultiply argument must be integers.");
+    static_assert(std::is_integral_v<ModuloType>,
+                  "numericxx::ModularMultiply modulo value must be integers.");
+
+    if (y < 0)
+        throw exceptions::InvalidArgumentException(
+            "exponent value must be a positive integer.");
 
     if (m == 0)
         throw exceptions::DividedByZeroException(
-            "modulo value must be not a zero.");
+            "modulo value must be not zero.");
 
-    std::common_type_t<M, N> ret = 0;
+    std::common_type_t<M, ModuloType> ret = 0;
 
     while (y) {
         if (y & 1) ret = (i128)(ret + x) % m;
@@ -53,17 +49,23 @@ constexpr std::common_type_t<M, N> ModularMultiply(M x, N y, const i64 &m) {
 /**
  * @brief Calculates x^y modulo m.
  */
-template <class M, class N, class T>
-constexpr std::common_type_t<M, N> ModularExp(M x, N y, const T &m) {
+template <class M, class N, class ModuloType>
+constexpr std::common_type_t<M, ModuloType> ModularExp(M x, N y,
+                                                       const ModuloType &m) {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::ModularExp argument must be an integer.");
-    static_assert(std::is_integral_v<T>,
-                  "integer::ModularExp modulo value must be an integer.");
+                  "numericxx::ModularExp argument must be integers.");
+    static_assert(std::is_integral_v<ModuloType>,
+                  "numericxx::ModularExp modulo value must be integers.");
+
+    if (y < 0)
+        throw exceptions::InvalidArgumentException(
+            "exponent value must be a positive integer.");
+
     if (m == 0)
         throw exceptions::DividedByZeroException(
-            "modulo value must be not a zero.");
+            "modulo value must be not zero.");
 
-    std::common_type_t<M, T> ret = 1;
+    std::common_type_t<M, ModuloType> ret = 1;
     x %= m;
 
     while (y) {
@@ -74,39 +76,6 @@ constexpr std::common_type_t<M, N> ModularExp(M x, N y, const T &m) {
 
     return ret;
 }
-
-/**
- * @brief Calculates gcd of the a, b and the positive solution of the Bezout's
- * Identity.
- */
-template <class M, class N>
-constexpr numericxx::BezoutSolution<M, N> ExtendedGcd(M a, N b) noexcept {
-    static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::ExtendedGcd argument must be an integer.");
-
-    if (a == 0 || b == 0) return numericxx::BezoutSolution(0, 0, 0);
-
-    a = std::abs(a);
-    b = std::abs(b);
-
-    M x = 1, x1 = 0;
-    N y = 0, y1 = 1;
-
-    std::common_type_t<M, N> a1 = a, b1 = b;
-
-    while (b1) {
-        std::common_type_t<M, N> q = a1 / b1;
-        std::tie(x, x1) = std::make_tuple(x1, x - q * x1);
-        std::tie(y, y1) = std::make_tuple(y1, y - q * y1);
-        std::tie(a1, b1) = std::make_tuple(b1, a1 - q * b1);
-    }
-
-    // make a's coefficient to positive integer
-    x = x + b / a1;
-    y = y - a / a1;
-
-    return numericxx::BezoutSolution(a1, x, y);
-}
-}  // namespace integer
+};  // namespace numericxx
 
 #endif  // arithmetics.h

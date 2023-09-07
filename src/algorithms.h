@@ -12,7 +12,7 @@
 namespace numericxx {
 
 template <class M, class N>
-class Solution {
+class BezoutIdentity {
    public:
     Solution() : d(0), x(0), y(0) {}
     Solution(std::common_type_t<M, N> _g, M _x, N _y) : d(_g), x(_x), y(_y) {}
@@ -23,7 +23,7 @@ class Solution {
 };
 
 template <class M, class N>
-constexpr numericxx::Solution<M, N> Gcd(M a, N b) noexcept {
+constexpr numericxx::BezoutIdentity<M, N> Gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
                   "integer::Gcd argument must be integers.");
 
@@ -47,7 +47,7 @@ constexpr numericxx::Solution<M, N> Gcd(M a, N b) noexcept {
     x = x + b / a1;
     y = y - a / a1;
 
-    numericxx::Solution<M, N> ret(a1, x, y);
+    numericxx::BezoutIdentity<M, N> ret(a1, x, y);
     return ret;
 }
 };  // namespace integer

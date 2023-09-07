@@ -55,7 +55,6 @@ constexpr u32 U32_MAX = 4294967295u;
 constexpr i64 I64_MAX = 9223372036854775807ll;
 constexpr i64 I64_MIN = -9223372036854775807ll - 1ll;
 constexpr u64 U64_MAX = 0xffffffffffffffffull;
-
 }  // namespace numericxx
 
 #endif  // config_int.h

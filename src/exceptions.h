@@ -31,7 +31,16 @@ class InvalidSolutionException : public std::exception {
    private:
     const char *message_;
 };
+
+class InvalidArgumentException : public std::exception {
+   public:
+    InvalidArgumentException(const char *msg) : message_(msg){};
+    const char *what() const noexcept override { return message_; }
+
+   private:
+    const char *message_;
+};
 }  // namespace exceptions
-}  // namespace integer
+}  // namespace numericxx
 
 #endif

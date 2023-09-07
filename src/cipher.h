@@ -15,7 +15,7 @@ template <class M, class N = i64>
 std::vector<M> Encrypt(std::vector<M> a, const N &k, const N &p,
                        const N &q) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<key_t>,
-                  "integer::cipher::encrypt argument must be integer.");
+                  "integer::cipher::encrypt argument must be integers.");
 
     i64 prod = p * q;
 

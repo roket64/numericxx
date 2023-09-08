@@ -1,16 +1,35 @@
 #ifndef NUMERICXX_BIGINT_H
 #define NUMERICXX_BIGINT_H
 
+#include <limits>
 #include <string>
 #include <vector>
 
 #include "configs/config.h"
 
 namespace numericxx {
-class BigInteger {
+namespace details {
+
+template <class T>
+class _DivType {
    private:
-    int sign; // -1 for negative, 0 for zero, 1 for positive
-    bool signedness; // true for signed, false for unsigned
+   public:
+    _DivType() : quot(0), rem(0){};
+    _DivType(const T& quot, const T& rem) : quot(quot), rem(rem){
+        static_assert(std::is_integral_v<T>,
+                      "integer::_DivType argument must be integers.")
+    };
+    T quot;
+    T rem;
+};
+}  // namespace details
+
+class BigInteger {
+    typedef details::_DivType<i64> _DivType;
+
+   private:
+    int sign;         // -1 for negative, 0 for zero, 1 for positive
+    bool signedness;  // true for signed, false for unsigned
     std::vector<u16> digits;
 
     friend std::ostream& operator<<(std::ostream& os, const BigInteger& n);
@@ -18,28 +37,28 @@ class BigInteger {
 
    public:
     BigInteger();
-    explicit BigInteger(const std::string& str);
-    explicit BigInteger(const char* str);
-    explicit BigInteger(const i32& n);
-    explicit BigInteger(const u32& n);
-    explicit BigInteger(const i64& n);
-    explicit BigInteger(const u64& n);
-    explicit BigInteger(const BigInteger& n);
+    constexpr explicit BigInteger(const std::string& str);
+    constexpr BigInteger(const char* str);
+    constexpr explicit BigInteger(const i32& n);
+    constexpr explicit BigInteger(const u32& n);
+    constexpr explicit BigInteger(const i64& n);
+    constexpr explicit BigInteger(const u64& n);
+    constexpr explicit BigInteger(const BigInteger& n);
 
-    // operators
-    BigInteger operator+(const BigInteger& n) const;
-    BigInteger operator-(const BigInteger& n) const;
-    BigInteger operator*(const BigInteger& n) const;
-    BigInteger operator/(const BigInteger& n) const;
-    BigInteger operator%(const BigInteger& n) const;
+    // arithmetic operators
+    BigInteger operator+(const BigInteger& other) const;
+    BigInteger operator-(const BigInteger& other) const;
+    BigInteger operator*(const BigInteger& other) const;
+    BigInteger operator/(const BigInteger& other) const;
+    BigInteger operator%(const BigInteger& other) const;
 
     // relational operators
-    bool operator<(const BigInteger& n) const;
-    bool operator>(const BigInteger& n) const;
-    bool operator<=(const BigInteger& n) const;
-    bool operator>=(const BigInteger& n) const;
-    bool operator==(const BigInteger& n) const;
-    bool operator!=(const BigInteger& n) const;
+    bool operator<(const BigInteger& other) const;
+    bool operator>(const BigInteger& other) const;
+    bool operator<=(const BigInteger& other) const;
+    bool operator>=(const BigInteger& other) const;
+    bool operator==(const BigInteger& other) const;
+    bool operator!=(const BigInteger& other) const;
 
     // assignment operators
     BigInteger& operator=(const std::string& str);
@@ -51,11 +70,11 @@ class BigInteger {
     BigInteger& operator=(const BigInteger& n);
 
     // operational assignments
-    const BigInteger& operator+=(const BigInteger& n);
-    const BigInteger& operator-=(const BigInteger& n);
-    const BigInteger& operator*=(const BigInteger& n);
-    const BigInteger& operator/=(const BigInteger& n);
-    const BigInteger& operator%=(const BigInteger& n);
+    const BigInteger& operator+=(const BigInteger& other);
+    const BigInteger& operator-=(const BigInteger& other);
+    const BigInteger& operator*=(const BigInteger& other);
+    const BigInteger& operator/=(const BigInteger& other);
+    const BigInteger& operator%=(const BigInteger& other);
 
     // increment, decrement operators
     const BigInteger& operator++();
@@ -64,4 +83,32 @@ class BigInteger {
     BigInteger operator--(int);
 };
 }  // namespace numericxx
+
+namespace std {
+template <>
+class numeric_limits<numericxx::BigInteger> {
+    static constexpr bool is_specialized = true;
+    static constexpr bool is_signed = true;
+    static constexpr bool is_integer = true;
+    static constexpr bool is_exact = true;
+    static constexpr bool has_infinity = false;
+    static constexpr bool has_quiet_NaN = false;
+    static constexpr bool has_signaling_NaN = false;
+    static constexpr bool has_denorm = false;
+    static constexpr bool has_denorm_loss = false;
+    static constexpr std::float_round_style round_style =
+        std::float_round_style::round_toward_zero;
+    static constexpr bool is_iec559 = false;
+    static constexpr bool is_bounded = true;
+    static constexpr bool is_modulo = true;
+    static constexpr int digits = 0;
+    static constexpr int digits10 = 0;
+    static constexpr int max_digits10 = 0;
+    static constexpr int radix = 0;
+    static constexpr int min_exponent = 0;
+    static constexpr int min_exponent10 = 0;
+    static constexpr int max_exponent = 0;
+    static constexpr int max_exponent10 = 0;
+};
+}  // namespace std
 #endif  // bigint.h

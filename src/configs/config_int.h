@@ -44,16 +44,25 @@ typedef __uint128_t u128;
 #endif
 #endif
 
+// Maximum value 16-bit integer can hold
 constexpr i16 I16_MAX = 32767;
+// Minimum value 16-bit integer can hold
 constexpr i16 I16_MIN = -32768;
+// Maximum value 16-bit unsigned integer can hold
 constexpr u16 U16_MAX = 65535;
 
+// Maximum value 32-bit integer can hold
 constexpr i32 I32_MAX = 2147483647;
+// Minimum value 32-bit integer can hold
 constexpr i32 I32_MIN = -2147483648;
+// Maximum value 32-bit unsigned integer can hold
 constexpr u32 U32_MAX = 4294967295u;
 
+// Maximum value 64-bit integer can hold
 constexpr i64 I64_MAX = 9223372036854775807ll;
+// Minimum value 64-bit integer can hold
 constexpr i64 I64_MIN = -9223372036854775807ll - 1ll;
+// Maximum value 64-bit unsigned integer can hold
 constexpr u64 U64_MAX = 0xffffffffffffffffull;
 }  // namespace numericxx
 

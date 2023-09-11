@@ -214,18 +214,18 @@ class BigInteger {
     bool operator<(const BigInteger& other) const {
         if (this->sign_ < other.sign_)
             return true;
-        else if (this->sign_ > other.sign_)
+        if (this->sign_ > other.sign_)
             return false;
 
         if (this->value_.size() < other.value_.size())
             return true;
-        else if (this->value_.size() > other.value_.size())
+        if (this->value_.size() > other.value_.size())
             return false;
 
         for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
             if (this->value_[i] < other.value_[i])
                 return true;
-            else if (this->value_[i] > other.value_[i])
+            if (this->value_[i] > other.value_[i])
                 return false;
         }
 
@@ -235,18 +235,18 @@ class BigInteger {
     bool operator>(const BigInteger& other) const {
         if (this->sign_ > other.sign_)
             return true;
-        else if (this->sign_ < other.sign_)
+        if (this->sign_ < other.sign_)
             return false;
 
         if (this->value_.size() > other.value_.size())
             return true;
-        else if (this->value_.size() < other.value_.size())
+        if (this->value_.size() < other.value_.size())
             return false;
 
         for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
             if (this->value_[i] > other.value_[i])
                 return true;
-            else if (this->value_[i] < other.value_[i])
+            if (this->value_[i] < other.value_[i])
                 return false;
         }
 

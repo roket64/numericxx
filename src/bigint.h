@@ -55,8 +55,12 @@ static DivTypell _divll(const i64& a, const i64& b) {
 }  // namespace details
 
 class BigInteger {
-    friend std::ostream& operator<<(std::ostream& os, const BigInteger& n);
-    // friend std::istream& operator>>(std::ostream& is, BigInteger& n);
+    friend std::istream& operator>>(std::istream& is, BigInteger& n) {
+        std::string str;
+        is >> str;
+        n.ConvertFromString(str);
+        return is;
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const BigInteger& n) {
         if (n.sign_ == 0) {
@@ -88,26 +92,55 @@ class BigInteger {
 
     static constexpr i32 BASE = 1000000000;
     static constexpr i32 BASE_DIGITS = 9;
+    static constexpr i32 BASE_UPPER_BOUND = 999999999;
 
    public:
-    BigInteger();
-    // explicit BigInteger(i32 n);
+    explicit BigInteger() : sign_(0), signedness_(true) {
+        value_.clear();
+        value_.push_back(0);
+    }
 
     explicit BigInteger(i32 n) : sign_(n != 0 ? n > 0 : 0), signedness_(true) {
-        if (sign_ == 0) n = -n;
+        if (sign_ < 0) n = -n;
 
         while (n > 0) {
             details::DivType div = details::_div(n, BASE);
-            value_.push_back(div.rem_);
+            value_.push_back(static_cast<i32>(div.rem_));
             n = div.quot_;
         }
     }
 
-    explicit BigInteger(u32 n);
-    explicit BigInteger(i64 n);
-    explicit BigInteger(u64 n);
-    explicit BigInteger(const BigInteger& n);
+    explicit BigInteger(u32 n) : sign_(n > 0 ? 1 : 0), signedness_(false) {
+        while (n > 0) {
+            details::DivType div = details::_div(n, BASE);
+            value_.push_back(static_cast<i32>(div.rem_));
+            n = div.quot_;
+        }
+    }
+
+    explicit BigInteger(i64 n) : sign_(n != 0 ? n > 0 : 0), signedness_(true) {
+        if (sign_ < 0) n = -n;
+
+        while (n > 0) {
+            details::DivTypell div = details::_divll(n, BASE);
+            value_.push_back(static_cast<i32>(div.rem_));
+            n = div.quot_;
+        }
+    }
+
+    explicit BigInteger(u64 n) : sign_(n > 0 ? 1 : 0), signedness_(false) {
+        while (n > 0) {
+            details::DivTypell div = details::_divll(n, BASE);
+            value_.push_back(static_cast<i32>(div.rem_));
+            n = div.quot_;
+        }
+    }
+
+    explicit BigInteger(const BigInteger& n)
+        : sign_(n.sign_), signedness_(n.signedness_), value_(n.value_){};
+
     explicit BigInteger(const std::string& str) { ConvertFromString(str); }
+
     explicit BigInteger(const char* c) { ConvertFromString(c); }
 
     // arithmetic operators
@@ -118,16 +151,72 @@ class BigInteger {
     BigInteger operator%(const BigInteger& other) const;
 
     // relational operators
-    bool operator<(const BigInteger& other) const;
-    bool operator>(const BigInteger& other) const;
-    bool operator<=(const BigInteger& other) const;
-    bool operator>=(const BigInteger& other) const;
-    bool operator==(const BigInteger& other) const;
-    bool operator!=(const BigInteger& other) const;
+    bool operator==(const BigInteger& other) const {
+        if (this->sign_ != other.sign_ ||
+            this->value_.size() != other.value_.size())
+            return false;
+
+        for (size_t i = 0; i < this->value_.size(); ++i)
+            if (this->value_[i] != other.value_[i]) return false;
+
+        return true;
+    }
+
+    bool operator!=(const BigInteger& other) const { return !(*this == other); }
+
+    bool operator<(const BigInteger& other) const {
+        if (this->sign_ < other.sign_)
+            return true;
+        else
+            return false;
+
+        if (this->value_.size() < other.value_.size())
+            return true;
+        else
+            return this->sign_ < other.sign_;
+
+        for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
+            if (this->value_[i] < other.value_[i])
+                return true;
+            else if (this->value_[i] > other.value_[i])
+                return false;
+        }
+    }
+
+    bool operator>(const BigInteger& other) const {
+        if (this->sign_ > other.sign_)
+            return true;
+        else
+            return false;
+
+        if (this->value_.size() > other.value_.size())
+            return true;
+        else
+            return this->sign_ > other.sign_;
+
+        for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
+            if (this->value_[i] > other.value_[i])
+                return true;
+            else if (this->value_[i] < other.value_[i])
+                return false;
+        }
+    }
+
+    bool operator<=(const BigInteger& other) const { return !(*this > other); }
+
+    bool operator>=(const BigInteger& other) const { return !(*this < other); }
 
     // assignment operators
-    BigInteger& operator=(const std::string& str);
-    BigInteger& operator=(const char* str);
+    BigInteger& operator=(const std::string& str) {
+        ConvertFromString(str);
+        return *this;
+    }
+
+    BigInteger& operator=(const char* str) {
+        ConvertFromString(str);
+        return *this;
+    }
+
     BigInteger& operator=(const i32& n);
     BigInteger& operator=(const u32& n);
     BigInteger& operator=(const i64& n);
@@ -147,8 +236,24 @@ class BigInteger {
     BigInteger operator++(int);
     BigInteger operator--(int);
 
-    // TODO: implement this later
-    void TruncateToBase();
+    /**
+     * @brief Adjust elements of the value vector to be in the range of the BASE
+     */
+    void ShrinkToBase() {
+        for (size_t i = 0; i < value_.size(); ++i) {
+            if (value_[i] >= BASE || value_[i] <= -BASE) {
+                details::DivType div = details::_div(value_[i], BASE);
+                value_[i] = div.rem_;
+
+                // end of the vector
+                if (i + 1 == value_.size()) {
+                    value_.push_back(div.quot_);
+                } else {
+                    value_[i + 1] += div.quot_;
+                }
+            }
+        }
+    }
 
     // TODO: implement this later 2
     void EqualizeSigns();
@@ -156,7 +261,7 @@ class BigInteger {
     /**
      * @brief Removes leading zeros from the value.
      */
-    void DeleteLeadingZeros() {
+    void RemoveLeadingZeros() {
         for (i32 i = static_cast<i32>(value_.size()) - 1; i > 0; --i) {
             if (value_[i] != 0) {
                 return;
@@ -166,16 +271,22 @@ class BigInteger {
         }
     }
 
-    void ValidateValue(bool simply_check_leading_zeros,
+    void ValidateValue(bool chk_leading_zeros_only = false,
                        bool has_valid_sign = true) {
-        if (simply_check_leading_zeros) DeleteLeadingZeros();
+        if (!chk_leading_zeros_only) {
+            ShrinkToBase();
+            EqualizeSigns();
+        }
+
+        RemoveLeadingZeros();
     }
 
     /**
-     * @brief Convert the value from a string.
+     * @brief Convert std::string to BigInteger
      */
     void ConvertFromString(const std::string& str) {
         sign_ = 1;
+        signedness_ = true;
 
         value_.clear();
         value_.reserve(str.size() / BASE_DIGITS + 1);

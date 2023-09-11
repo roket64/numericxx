@@ -143,9 +143,56 @@ class BigInteger {
 
     explicit BigInteger(const char* c) { ConvertFromString(c); }
 
+    BigInteger operator-() const;
+
     // arithmetic operators
-    BigInteger operator+(const BigInteger& other) const;
-    BigInteger operator-(const BigInteger& other) const;
+    /*
+    BigInteger operator+(const BigInteger& other) const {
+        BigInteger ret;
+
+        ret.value_.resize(std::max(this->value_.size(), other.value_.size()));
+
+        for (size_t i = 0; i < this->value_.size() || i < other.value_.size();
+             ++i) {
+            if (i < this->value_.size())
+                ret.value_[i] +=
+                    this->sign_ < 0 ? -this->value_[i] : this->value_[i];
+
+            if (i < other.value_.size())
+                ret.value_[i] +=
+                    other.sign_ < 0 ? -other.value_[i] : other.value_[i];
+        }
+
+        ret.ValidateValue();
+        // TODO: why this doesn't work?
+        // return ret;
+    }
+    /**/
+
+    /*
+    BigInteger operator-(const BigInteger& other) const {
+        BigInteger ret;
+
+        ret.value_.resize(std::max(this->value_.size(), other.value_.size()));
+
+        for (size_t i = 0; i < this->value_.size() || i < other.value_.size();
+             ++i) {
+            if (i < this->value_.size())
+                ret.value_[i] -=
+                    this->sign_ < 0 ? -this->value_[i] : this->value_[i];
+
+            if (i < other.value_.size())
+                ret.value_[i] -=
+                    other.sign_ < 0 ? -other.value_[i] : other.value_[i];
+        }
+
+        ret.ValidateValue();
+
+        // TODO: why this doesn't work?
+        // return ret;
+    }
+    /**/
+
     BigInteger operator*(const BigInteger& other) const;
     BigInteger operator/(const BigInteger& other) const;
     BigInteger operator%(const BigInteger& other) const;
@@ -155,7 +202,7 @@ class BigInteger {
         if (this->sign_ != other.sign_ ||
             this->value_.size() != other.value_.size())
             return false;
-
+    
         for (size_t i = 0; i < this->value_.size(); ++i)
             if (this->value_[i] != other.value_[i]) return false;
 
@@ -167,13 +214,13 @@ class BigInteger {
     bool operator<(const BigInteger& other) const {
         if (this->sign_ < other.sign_)
             return true;
-        else
+        else if (this->sign_ > other.sign_)
             return false;
 
         if (this->value_.size() < other.value_.size())
             return true;
-        else
-            return this->sign_ < other.sign_;
+        else if (this->value_.size() > other.value_.size())
+            return false;
 
         for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
             if (this->value_[i] < other.value_[i])
@@ -181,18 +228,20 @@ class BigInteger {
             else if (this->value_[i] > other.value_[i])
                 return false;
         }
+
+        return false;
     }
 
     bool operator>(const BigInteger& other) const {
         if (this->sign_ > other.sign_)
             return true;
-        else
+        else if (this->sign_ < other.sign_)
             return false;
 
         if (this->value_.size() > other.value_.size())
             return true;
-        else
-            return this->sign_ > other.sign_;
+        else if (this->value_.size() < other.value_.size())
+            return false;
 
         for (i32 i = static_cast<i32>(this->value_.size()) - 1; i >= 0; --i) {
             if (this->value_[i] > other.value_[i])
@@ -200,6 +249,8 @@ class BigInteger {
             else if (this->value_[i] < other.value_[i])
                 return false;
         }
+
+        return false;
     }
 
     bool operator<=(const BigInteger& other) const { return !(*this > other); }
@@ -272,7 +323,7 @@ class BigInteger {
     }
 
     void ValidateValue(bool chk_leading_zeros_only = false,
-                       bool has_valid_sign = true) {
+                       bool has_valid_sign = false) {
         if (!chk_leading_zeros_only) {
             ShrinkToBase();
             EqualizeSigns();

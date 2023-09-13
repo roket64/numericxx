@@ -168,11 +168,11 @@ class BigInteger {
         for (size_t i = 0; i < ret.value_.size(); ++i) {
             if (i < this->value_.size())
                 ret.value_[i] +=
-                    this->sign_ < 0 ? this->value_[i] : -this->value_[i];
+                    this->sign_ < 0 ? -this->value_[i] : this->value_[i];
 
             if (i < other.value_.size())
                 ret.value_[i] +=
-                    other.sign_ < 0 ? other.value_[i] : -other.value_[i];
+                    other.sign_ < 0 ? -other.value_[i] : other.value_[i];
         }
 
         ret.ValidateValue();

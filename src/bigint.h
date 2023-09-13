@@ -100,9 +100,14 @@ class BigInteger {
         value_.push_back(0);
     }
 
-    explicit BigInteger(i32 n)
-        : sign_(n != 0 ? n > 0 : 0), signedness_(true) {
-        if (sign_ < 0) n = -n;
+    explicit BigInteger(i32 n) : signedness_(true) {
+        if (n == 0) sign_ = 0;
+        if (n > 0) {
+            sign_ = 1;
+        } else {
+            sign_ = -1;
+            n = -n;
+        }
 
         while (n > 0) {
             details::DivType div = details::_div(n, BASE);
@@ -111,8 +116,7 @@ class BigInteger {
         }
     }
 
-    explicit BigInteger(u32 n)
-        : sign_(n > 0 ? 1 : 0), signedness_(false) {
+    explicit BigInteger(u32 n) : sign_(n > 0 ? 1 : 0), signedness_(false) {
         while (n > 0) {
             details::DivType div = details::_div(n, BASE);
             value_.push_back(static_cast<i32>(div.rem_));
@@ -120,9 +124,15 @@ class BigInteger {
         }
     }
 
-    explicit BigInteger(i64 n)
-        : sign_(n != 0 ? n > 0 : 0), signedness_(true) {
-        if (sign_ < 0) n = -n;
+    explicit BigInteger(i64 n) : signedness_(true) {
+        if (n == 0) sign_ = 0;
+
+        if (n > 0) {
+            sign_ = 1;
+        } else {
+            sign_ = -1;
+            n = -n;
+        }
 
         while (n > 0) {
             details::DivTypell div = details::_divll(n, BASE);
@@ -131,8 +141,7 @@ class BigInteger {
         }
     }
 
-    explicit BigInteger(u64 n)
-        : sign_(n > 0 ? 1 : 0), signedness_(false) {
+    explicit BigInteger(u64 n) : sign_(n > 0 ? 1 : 0), signedness_(false) {
         while (n > 0) {
             details::DivTypell div = details::_divll(n, BASE);
             value_.push_back(static_cast<i32>(div.rem_));
@@ -140,9 +149,7 @@ class BigInteger {
         }
     }
 
-    explicit BigInteger(const std::string& str) {
-        ConvertFromString(str);
-    }
+    explicit BigInteger(const std::string& str) { ConvertFromString(str); }
 
     explicit BigInteger(const char* c) { ConvertFromString(c); }
 
@@ -152,52 +159,48 @@ class BigInteger {
     BigInteger operator-() const;
 
     // arithmetic operators
-    // /*
     BigInteger operator+(const BigInteger& other) const {
         BigInteger ret;
 
         ret.value_.resize(std::max(this->value_.size(), other.value_.size()),
                           0);
 
-        for (size_t i = 0; i < this->value_.size() || i < other.value_.size();
-             ++i) {
+        for (size_t i = 0; i < ret.value_.size(); ++i) {
             if (i < this->value_.size())
                 ret.value_[i] +=
-                    this->sign_ < 0 ? -this->value_[i] : this->value_[i];
+                    this->sign_ < 0 ? this->value_[i] : -this->value_[i];
 
             if (i < other.value_.size())
                 ret.value_[i] +=
-                    other.sign_ < 0 ? -other.value_[i] : other.value_[i];
+                    other.sign_ < 0 ? other.value_[i] : -other.value_[i];
         }
 
         ret.ValidateValue();
 
         return ret;
     }
-    /**/
 
-    // /*
     BigInteger operator-(const BigInteger& other) const {
         BigInteger ret;
 
-        ret.value_.resize(std::max(this->value_.size(), other.value_.size()));
+        ret.value_.resize(std::max(this->value_.size(), other.value_.size()),
+                          0);
 
-        for (size_t i = 0; i < this->value_.size() || i < other.value_.size();
-             ++i) {
-            if (i < this->value_.size())
+        for (size_t i = 0; i < ret.value_.size(); ++i) {
+            if (i < this->value_.size()) {
+                ret.value_[i] +=
+                    (this->sign_ < 0 ? -this->value_[i] : this->value_[i]);
+            }
+            if (i < other.value_.size()) {
                 ret.value_[i] -=
-                    this->sign_ < 0 ? -this->value_[i] : this->value_[i];
-
-            if (i < other.value_.size())
-                ret.value_[i] -=
-                    other.sign_ < 0 ? -other.value_[i] : other.value_[i];
+                    (other.sign_ < 0 ? -other.value_[i] : other.value_[i]);
+            }
         }
 
         ret.ValidateValue();
 
         return ret;
     }
-    /**/
 
     BigInteger operator*(const BigInteger& other) const;
     BigInteger operator/(const BigInteger& other) const;
@@ -214,7 +217,9 @@ class BigInteger {
 
         return true;
     }
+
     bool operator!=(const BigInteger& other) const { return !(*this == other); }
+
     bool operator<(const BigInteger& other) const {
         if (this->sign_ < other.sign_) return true;
         if (this->sign_ > other.sign_) return false;
@@ -229,6 +234,7 @@ class BigInteger {
 
         return false;
     }
+
     bool operator>(const BigInteger& other) const {
         if (this->sign_ > other.sign_) return true;
         if (this->sign_ < other.sign_) return false;
@@ -378,7 +384,6 @@ class BigInteger {
         ValidateValue(true);
     }
 };
-
 }  // namespace numericxx
 
 namespace std {

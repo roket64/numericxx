@@ -10,22 +10,61 @@
 #include "utilities.h"
 
 namespace numericxx {
-
 template <class M, class N>
 class BezoutIdentity {
    public:
-    Solution() : d(0), x(0), y(0) {}
-    Solution(std::common_type_t<M, N> _g, M _x, N _y) : d(_g), x(_x), y(_y) {}
+    BezoutIdentity() : d(0), x(0), y(0){};
+    BezoutIdentity(std::common_type_t<M, N> _g, M _x, N _y)
+        : d(_g), x(_x), y(_y){};
 
-    std::common_type_t<M, N> d;  // gcd of a, b
-    M x;                         // coefficient of a
-    N y;                         // coefficient of b
+    /* Greatest Common Divisor of a, b */
+    std::common_type_t<M, N> d;
+    /* Coefficient of a */
+    M x;
+    /* Coefficient of b */
+    N y;
 };
 
+/**
+ * @brief Binary Euclidean Algorithm
+ * @details Returns GCD of a, b
+ */
 template <class M, class N>
-constexpr numericxx::BezoutIdentity<M, N> Gcd(M a, N b) noexcept {
+constexpr std::common_type_t<M, N> Gcd(M a, N b) noexcept {
+    if (a == 0 || b == 0) return 0;
+
+    std::common_type_t<M, N> d = 1;
+
+    /* Remove powers of two from GCD */
+    while (a % 2 == 0 && b % 2 == 0) {
+        a /= 2;
+        b /= 2;
+        d *= 2;
+    }
+
+    /* At least one of them is now odd */
+    while (a != 0) {
+        while (a % 2 == 0) a /= 2;
+        while (b % 2 == 0) b /= 2;
+
+        /* Now both a and b are odd */
+        if (a >= b)
+            a = (a - b) / 2;
+        else
+            b = (b - a) / 2;
+    }
+
+    return d * b;
+}
+
+/**
+ * @brief Extended Euclidean Algorithm
+ * @details Returns GCD of a, b and coefficients of Bezout's identity
+ */
+template <class M, class N>
+constexpr numericxx::BezoutIdentity<M, N> ExtendedGcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "integer::Gcd argument must be integers.");
+                  "numericxx::ExtendedGcd argument must be integers.");
 
     using CommonType = std::common_type_t<M, N>;
 
@@ -50,6 +89,6 @@ constexpr numericxx::BezoutIdentity<M, N> Gcd(M a, N b) noexcept {
     numericxx::BezoutIdentity<M, N> ret(a1, x, y);
     return ret;
 }
-};  // namespace integer
+};  // namespace numericxx
 
 #endif  // algorithms.h

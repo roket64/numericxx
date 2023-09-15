@@ -1763,3 +1763,70 @@ std::ostream& operator<<(std::ostream& out, const BigInt& num) {
 }
 
 #endif  // BIG_INT_IO_STREAM_OPERATORS_HPP
+
+/*
+    ===========================================================================
+    Type specializations for BigInt
+    ===========================================================================
+*/
+
+/**
+ * std::is_void<>
+*/
+template<>
+struct std::is_void<BigInt> : std::false_type {};
+
+/**
+ * std::is_null_pointer<>
+*/
+template<>
+struct std::is_null_pointer<BigInt> : std::false_type {};
+
+/**
+ * std::is_integral<>
+*/
+template <>
+struct std::is_integral<BigInt> : std::true_type {};
+
+/**
+ * std::is_floating_point<>
+*/
+template<>
+struct std::is_floating_point<BigInt> : std::false_type {};
+
+/**
+ * std::is_array<>
+*/
+template<>
+struct std::is_array<BigInt> : std::false_type {};
+
+/**
+ * std::is_enum<>
+*/
+template<>
+struct std::is_enum<BigInt> : std::false_type {};
+
+/**
+ * std::is_union<>
+*/
+template<>
+struct std::is_union<BigInt> : std::false_type {};
+
+/**
+ * std::is_class<>
+ * TODO: check if this is correct
+*/
+template<>
+struct std::is_class<BigInt> : std::true_type {}; 
+
+/**
+ * std::is_function<>
+*/
+template<>
+struct std::is_function<BigInt> : std::false_type {};
+
+/**
+ * std::is_pointer<>
+*/
+template<>
+struct std::is_pointer<BigInt> : std::false_type {};

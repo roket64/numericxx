@@ -113,7 +113,7 @@ class BigInt {
     long long to_long_long() const;
 
     // Random number generating functions:
-    friend BigInt big_random(size_t);
+    friend BigInt gen_random(size_t);
 };
 
 #endif  // BIG_INT_HPP
@@ -244,7 +244,7 @@ const size_t MAX_RANDOM_LENGTH = 1000;
     Returns a random BigInt with a specific number of digits.
 */
 
-BigInt big_random(size_t num_digits = 0) {
+BigInt gen_random(size_t num_digits = 0) {
     std::random_device rand_generator;  // true random number generator
 
     if (num_digits == 0)  // the number of digits were not specified
@@ -315,7 +315,7 @@ BigInt::BigInt(const long long& num) {
 */
 
 BigInt::BigInt(const std::string& num) {
-    if (num[0] == '+' or num[0] == '-') {  // check for sign
+    if (num[0] == '+' || num[0] == '-') {  // check for sign
         std::string magnitude = num.substr(1);
         if (is_valid_number(magnitude)) {
             value = magnitude;
@@ -875,115 +875,6 @@ BigInt sqrt(const BigInt& num) {
     return sqrt_current;
 }
 
-/*
-    gcd(BigInt, BigInt)
-    -------------------
-    Returns the greatest common divisor (GCD, a.k.a. HCF) of two BigInts using
-    Euclid's algorithm.
-*/
-
-BigInt gcd(const BigInt& num1, const BigInt& num2) {
-    BigInt abs_num1 = abs(num1);
-    BigInt abs_num2 = abs(num2);
-
-    // base cases:
-    if (abs_num2 == 0) return abs_num1;  // gcd(a, 0) = |a|
-    if (abs_num1 == 0) return abs_num2;  // gcd(0, a) = |a|
-
-    BigInt remainder = abs_num2;
-    while (remainder != 0) {
-        remainder = abs_num1 % abs_num2;
-        abs_num1 = abs_num2;   // previous remainder
-        abs_num2 = remainder;  // current remainder
-    }
-
-    return abs_num1;
-}
-
-/*
-    gcd(BigInt, Integer)
-    --------------------
-*/
-
-BigInt gcd(const BigInt& num1, const long long& num2) {
-    return gcd(num1, BigInt(num2));
-}
-
-/*
-    gcd(BigInt, String)
-    -------------------
-*/
-
-BigInt gcd(const BigInt& num1, const std::string& num2) {
-    return gcd(num1, BigInt(num2));
-}
-
-/*
-    gcd(Integer, BigInt)
-    --------------------
-*/
-
-BigInt gcd(const long long& num1, const BigInt& num2) {
-    return gcd(BigInt(num1), num2);
-}
-
-/*
-    gcd(String, BigInt)
-    -------------------
-*/
-
-BigInt gcd(const std::string& num1, const BigInt& num2) {
-    return gcd(BigInt(num1), num2);
-}
-
-/*
-    lcm(BigInt, BigInt)
-    -------------------
-    Returns the least common multiple (LCM) of two BigInts.
-*/
-
-BigInt lcm(const BigInt& num1, const BigInt& num2) {
-    if (num1 == 0 or num2 == 0) return 0;
-
-    return abs(num1 * num2) / gcd(num1, num2);
-}
-
-/*
-    lcm(BigInt, Integer)
-    --------------------
-*/
-
-BigInt lcm(const BigInt& num1, const long long& num2) {
-    return lcm(num1, BigInt(num2));
-}
-
-/*
-    lcm(BigInt, String)
-    -------------------
-*/
-
-BigInt lcm(const BigInt& num1, const std::string& num2) {
-    return lcm(num1, BigInt(num2));
-}
-
-/*
-    lcm(Integer, BigInt)
-    --------------------
-*/
-
-BigInt lcm(const long long& num1, const BigInt& num2) {
-    return lcm(BigInt(num1), num2);
-}
-
-/*
-    lcm(String, BigInt)
-    -------------------
-*/
-
-BigInt lcm(const std::string& num1, const BigInt& num2) {
-    return lcm(BigInt(num1), num2);
-}
-
 #endif  // BIG_INT_MATH_FUNCTIONS_HPP
 
 /*
@@ -999,7 +890,7 @@ BigInt lcm(const std::string& num1, const BigInt& num2) {
 #include <cmath>
 #include <string>
 
-const long long FLOOR_SQRT_LLONG_MAX = 3037000499;
+constexpr long long FLOOR_SQRT_LLONG_MAX = 3037000499;
 
 /*
     BigInt + BigInt
@@ -1769,64 +1660,68 @@ std::ostream& operator<<(std::ostream& out, const BigInt& num) {
     Type specializations for BigInt
     ===========================================================================
 */
+#ifndef BIGINT_TYPE_SPECIALIZATIONS_HPP
+#define BIGINT_TYPE_SPECIALIZATIONS_HPP
 
 /**
  * std::is_void<>
-*/
-template<>
+ */
+template <>
 struct std::is_void<BigInt> : std::false_type {};
 
 /**
  * std::is_null_pointer<>
-*/
-template<>
+ */
+template <>
 struct std::is_null_pointer<BigInt> : std::false_type {};
 
 /**
  * std::is_integral<>
-*/
+ */
 template <>
 struct std::is_integral<BigInt> : std::true_type {};
 
 /**
  * std::is_floating_point<>
-*/
-template<>
+ */
+template <>
 struct std::is_floating_point<BigInt> : std::false_type {};
 
 /**
  * std::is_array<>
-*/
-template<>
+ */
+template <>
 struct std::is_array<BigInt> : std::false_type {};
 
 /**
  * std::is_enum<>
-*/
-template<>
+ */
+template <>
 struct std::is_enum<BigInt> : std::false_type {};
 
 /**
  * std::is_union<>
-*/
-template<>
+ */
+template <>
 struct std::is_union<BigInt> : std::false_type {};
 
 /**
  * std::is_class<>
  * TODO: check if this is correct
-*/
-template<>
-struct std::is_class<BigInt> : std::true_type {}; 
+ */
+template <>
+struct std::is_class<BigInt> : std::true_type {};
 
 /**
  * std::is_function<>
-*/
-template<>
+ */
+template <>
 struct std::is_function<BigInt> : std::false_type {};
 
 /**
  * std::is_pointer<>
-*/
-template<>
+ */
+template <>
 struct std::is_pointer<BigInt> : std::false_type {};
+
+#endif // BIGINT_TYPE_SPECIALIZATIONS_HPP

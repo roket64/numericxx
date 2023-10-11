@@ -27,13 +27,20 @@ class BezoutIdentity {
 
 /**
  * @brief Binary Euclidean Algorithm
- * @details Returns GCD of a, b
+ * @details Returns Great Common Divisor of a, b
  */
 template <class M, class N>
-constexpr std::common_type_t<M, N> Gcd(M a, N b) noexcept {
+constexpr std::common_type_t<M, N> gcd(M a, N b) noexcept {
+    static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
+                  "numericxx::gcd argument must be integers.");
     if (a == 0 || b == 0) return 0;
 
-    std::common_type_t<M, N> d = 1;
+    using Ct_ = std::common_type_t<M, N>;
+
+    a = numericxx::abs<Ct_>(a);
+    b = numericxx::abs<Ct_>(b);
+
+    Ct_ d = 1;
 
     /* Remove powers of two from GCD */
     while (a % 2 == 0 && b % 2 == 0) {
@@ -62,22 +69,22 @@ constexpr std::common_type_t<M, N> Gcd(M a, N b) noexcept {
  * @details Returns GCD of a, b and coefficients of Bezout's identity
  */
 template <class M, class N>
-constexpr numericxx::BezoutIdentity<M, N> ExtendedGcd(M a, N b) noexcept {
+constexpr numericxx::BezoutIdentity<M, N> ext_gcd(M a, N b) noexcept {
     static_assert(std::is_integral_v<M> && std::is_integral_v<N>,
-                  "numericxx::ExtendedGcd argument must be integers.");
+                  "numericxx::ext_gcd argument must be integers.");
 
-    using CommonType = std::common_type_t<M, N>;
+    using Ct_ = std::common_type_t<M, N>;
 
-    const CommonType abs_a = numericxx::Abs<CommonType>(a);
-    const CommonType abs_b = numericxx::Abs<CommonType>(b);
+    a = numericxx::abs<Ct_>(a);
+    b = numericxx::abs<Ct_>(b);
 
     M x = 1, x1 = 0;
     N y = 0, y1 = 1;
 
-    CommonType a1 = a, b1 = b;
+    Ct_ a1 = a, b1 = b;
 
     while (b1) {
-        CommonType q = a1 / b1;
+        Ct_ q = a1 / b1;
         std::tie(x, x1) = std::make_pair(x1, x - q * x1);
         std::tie(y, y1) = std::make_pair(y1, y - q * y1);
         std::tie(a1, b1) = std::make_pair(b1, a1 - q * b1);

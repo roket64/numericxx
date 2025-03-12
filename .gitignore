@@ -1,8 +1,5 @@
 # Excluded project paths
 
-# main
-main.cpp
-
 # VSCode settings
 /.vscode/
 

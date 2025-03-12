@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.11.0)
 
+enable_testing()
+add_subdirectory(tests)
+
 project(numericxx
         VERSION 0.1.0
         LANGUAGES C CXX
@@ -24,9 +27,9 @@ set(GCC_COMPILE_OPTIONS_RELEASE
   ${GCC_COMPILE_OPTIONS} -O3
 )
 
-add_executable(numericxx ${PROJECT_SOURCES})
+include_directories(include)
 
-target_include_directories(numericxx PRIVATE .)
+add_library(numericxx STATIC src/main.cpp)
 
-target_compile_options(numericxx PRIVATE ${GCC_COMPILE_OPTIONS})
-
+install(TARGETS numericxx DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include)

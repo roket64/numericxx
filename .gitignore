@@ -6,9 +6,8 @@ main.cpp
 # VSCode settings
 /.vscode/
 
-# CMakefiles
+# Build directory
 /build/
-CMakeLists.txt
 
-# Input files
-input.txt
+# Caches
+/.cache/

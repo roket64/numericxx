@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=$(exec_prefix)/@NUMERICXX_INSTALL_LIBDIR@
+includedir=$(perfix)/@NUMERICXX_INSTALL_INCDIR@
+
+Name: numerixx
+Descriptions: A Number Theory collection library
+Version: 0.1.0
+Libs: -L${libdir} -lnumericxx
+Cflags: -I${includedir}

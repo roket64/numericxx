@@ -30,9 +30,12 @@ typedef __uint32_t u32;
 #if defined(NUMERICXX_MSVC_VERSION)
 typedef signed _int64 i64;
 typedef unsigned _int64 u64;
+typedef u64 usize;
 #else
 typedef __int64_t i64;
 typedef __uint64_t u64;
+typedef i64 isize;
+typedef u64 usize;
 #endif
 
 #if (defined(__GNUC__) || defined(__GNUG__)) ||                                \
@@ -71,6 +74,13 @@ constexpr i64 I64_MAX = 9223372036854775807ll;
 constexpr i64 I64_MIN = -9223372036854775807ll - 1ll;
 // Maximum value 64-bit unsigned integer can hold
 constexpr u64 U64_MAX = 0xffffffffffffffffull;
+
+// Maximum value 64-bit integer can hold
+constexpr isize ISIZE_MAX = I64_MIN;
+// Minimum value 64-bit integer can hold
+constexpr isize ISIZE_MIN = I64_MIN;
+// Maximum value 64-bit unsigned integer can hold
+constexpr usize USIZE_MAX = U64_MAX;
 } // namespace numericxx
 
 #endif // types.hpp
